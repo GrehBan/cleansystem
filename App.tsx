@@ -5,7 +5,9 @@ import Quiz from './components/Quiz';
 import Certificate from './components/Certificate';
 import { MODULES } from './data';
 import { UserProgress } from './types';
-import { ChevronRight, Home, BookOpen } from 'lucide-react';
+import { ChevronRight, Home, BookOpen, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const App: React.FC = () => {
   // --- STATE ---
@@ -13,7 +15,8 @@ const App: React.FC = () => {
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [activeLessonIndex, setActiveLessonIndex] = useState(0);
   const [isQuizMode, setIsQuizMode] = useState(false);
-  const [showCertificate, setShowCertificate] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [certificateId] = useState(() => Math.random().toString(36).substr(2, 9).toUpperCase() + '-2026');
   
   // Ref for main content to scroll
   const mainContentRef = useRef<HTMLDivElement>(null);
@@ -98,8 +101,48 @@ const App: React.FC = () => {
     }
   };
 
-  const handlePrintCertificate = () => {
-      window.print();
+  const handleDownloadCertificate = async () => {
+    const element = document.getElementById('certificate-print-area');
+    if (!element) return;
+
+    try {
+      setIsGeneratingPdf(true);
+      
+      // Temporarily make it visible/opaque for capture without showing in viewport logic
+      const parent = element.parentElement;
+      if (parent) {
+          parent.style.opacity = '1';
+          parent.style.zIndex = '9999';
+          parent.style.background = '#fff'; // Ensure white background behind it
+      }
+
+      const canvas = await html2canvas(element, {
+        scale: 2, // Higher resolution
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      // Revert styles
+      if (parent) {
+          parent.style.opacity = '0';
+          parent.style.zIndex = '-1';
+      }
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Certyfikat_CzystoscPro_${certificateId}.pdf`);
+
+    } catch (error) {
+      console.error('Failed to generate PDF', error);
+      alert('Błąd generowania certyfikatu. Spróbuj ponownie.');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   // --- RENDER HELPERS ---
@@ -107,11 +150,25 @@ const App: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-background text-white font-sans selection:bg-primary selection:text-white">
-      {/* Printable Certificate (Hidden unless printing) */}
+      {/* 
+         The Certificate component is always mounted but hidden (opacity-0, pointer-events-none).
+         This allows html2canvas to find it in the DOM and render it.
+      */}
       <Certificate 
         userName="Jan Kowalski" // In a real app, this would be dynamic
         completionDate={new Date().toLocaleDateString('pl-PL')}
+        progress={progress}
+        certificateId={certificateId}
       />
+
+      {/* Loading Overlay for PDF Generation */}
+      {isGeneratingPdf && (
+        <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
+            <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+            <h2 className="text-xl font-bold">Generowanie Certyfikatu...</h2>
+            <p className="text-gray-400">Proszę czekać, przygotowujemy plik PDF.</p>
+        </div>
+      )}
 
       {/* Sidebar */}
       <div className="hidden md:block print:hidden">
@@ -150,7 +207,7 @@ const App: React.FC = () => {
           <Dashboard 
             progress={progress} 
             onSelectModule={handleSelectModule} 
-            onPrintCertificate={handlePrintCertificate}
+            onPrintCertificate={handleDownloadCertificate}
           />
         ) : (
           activeModule && (

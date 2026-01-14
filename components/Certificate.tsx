@@ -1,54 +1,92 @@
 import React from 'react';
 import { MODULES } from '../data';
+import { UserProgress } from '../types';
 
 interface CertificateProps {
   userName: string;
   completionDate: string;
+  progress: UserProgress;
+  certificateId: string;
 }
 
-const Certificate: React.FC<CertificateProps> = ({ userName, completionDate }) => {
+const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, progress, certificateId }) => {
   return (
-    <div id="certificate-print-area" className="hidden print:flex flex-col items-center justify-center min-h-screen bg-white text-black p-12 text-center border-[20px] border-double border-gray-800">
-      
-      <div className="mb-12">
-        <h1 className="text-5xl font-extrabold uppercase tracking-[0.2em] mb-4 text-black">Certyfikat</h1>
-        <div className="text-xl uppercase tracking-widest text-gray-600">Ukończenia Szkolenia Zawodowego</div>
-      </div>
+    // We position this absolute and off-screen initially, but ensure it has A4 dimensions for the screenshot
+    <div className="absolute top-0 left-0 w-full flex justify-center pointer-events-none opacity-0 overflow-hidden z-[-1]">
+      <div 
+        id="certificate-print-area" 
+        className="relative bg-white text-black text-center flex flex-col items-center p-16 box-border"
+        style={{ width: '794px', height: '1123px' }} // Exact A4 dimensions at 96DPI
+      >
+        {/* Decorative Border */}
+        <div className="absolute inset-4 border-[4px] border-double border-gray-800 pointer-events-none"></div>
+        <div className="absolute inset-6 border-[1px] border-gray-400 pointer-events-none"></div>
 
-      <div className="mb-12 w-full max-w-2xl">
-        <p className="text-lg italic text-gray-600 mb-4">Niniejszym zaświadcza się, że</p>
-        <h2 className="text-4xl font-serif font-bold border-b-2 border-black pb-2 mb-8">{userName}</h2>
-        <p className="text-lg text-gray-800 leading-relaxed">
-          Ukończył(a) z wynikiem pozytywnym cykl szkoleń wewnętrznych w zakresie:
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 w-full max-w-3xl gap-4 mb-16 text-left">
-        {MODULES.map(m => (
-            <div key={m.id} className="flex justify-between border-b border-gray-300 py-2">
-                <span className="font-bold text-lg">{m.title}</span>
-                <span className="text-sm font-mono text-gray-600">ZALICZONE</span>
+        {/* Header */}
+        <div className="mt-12 mb-8">
+            <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="w-6 h-6 bg-primary"></div>
+                <span className="font-extrabold tracking-tighter text-2xl">CLEAN<span className="text-primary">SYSTEM</span></span>
             </div>
-        ))}
-      </div>
-
-      <div className="mb-8">
-        <p className="text-sm text-gray-600">Zgodnie z wymogami Dz.U. 2024 poz. 1327 oraz standardami wewnątrzzakładowymi.</p>
-      </div>
-
-      <div className="flex justify-between w-full max-w-4xl mt-12 px-12">
-        <div className="text-center">
-            <p className="font-bold mb-12">{completionDate}</p>
-            <div className="border-t border-black w-48 pt-2 text-sm font-bold">Data</div>
+            <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Profesjonalny System Szkoleniowy</p>
         </div>
-        <div className="text-center">
-            <div className="h-12"></div> {/* Space for signature */}
-            <div className="border-t border-black w-64 pt-2 text-sm font-bold">Instruktor / Kierownik Regionalny</div>
+
+        <h1 className="text-5xl font-serif font-bold uppercase tracking-wider mb-2 text-gray-900">Certyfikat</h1>
+        <div className="text-xl uppercase tracking-[0.3em] text-primary font-bold mb-12">Kompetencji Zawodowych</div>
+
+        <div className="mb-8 w-full max-w-xl">
+            <p className="text-lg italic text-gray-600 mb-2 font-serif">Niniejszym zaświadcza się, że:</p>
+            <div className="text-4xl font-bold border-b-2 border-gray-300 pb-2 mb-2 font-serif text-gray-900">{userName}</div>
         </div>
-      </div>
-      
-      <div className="mt-20 text-[10px] text-gray-400 font-mono">
-        ID CERTYFIKATU: {Math.random().toString(36).substr(2, 9).toUpperCase()}-{new Date().getFullYear()}
+
+        <p className="text-md text-gray-700 leading-relaxed mb-8 max-w-2xl">
+            Ukończył(a) z wynikiem pozytywnym kompleksowy cykl szkoleń teoretycznych i praktycznych
+            w zakresie profesjonalnego utrzymania czystości, zgodnie z wymogami prawnymi (Dz.U. 2024 poz. 1327)
+            oraz standardami technologicznymi na rok 2026.
+        </p>
+
+        {/* Modules Grid */}
+        <div className="w-full max-w-2xl mb-12">
+            <div className="bg-gray-100 px-4 py-2 flex justify-between text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
+                <span>Moduł Szkoleniowy</span>
+                <span>Wynik Egzaminu</span>
+            </div>
+            {MODULES.map(m => {
+                const score = progress[m.id]?.quizScore;
+                return (
+                    <div key={m.id} className="flex justify-between border-b border-gray-200 py-3 text-sm">
+                        <span className="font-bold text-gray-800 text-left">{m.title}</span>
+                        <span className="font-mono font-bold text-gray-900">
+                            {score ? `${score}%` : '---'}
+                        </span>
+                    </div>
+                );
+            })}
+        </div>
+
+        {/* Footer / Signatures */}
+        <div className="flex justify-between w-full max-w-3xl mt-auto mb-16 px-8">
+            <div className="text-center">
+                <p className="font-bold text-lg mb-8">{completionDate}</p>
+                <div className="border-t border-gray-800 w-48 pt-2 text-xs font-bold uppercase tracking-widest">Data Wydania</div>
+            </div>
+            
+            <div className="text-center">
+                {/* Fake Signature */}
+                <div className="h-8 font-serif italic text-2xl text-primary mb-0">Adam Nowak</div>
+                <div className="border-t border-gray-800 w-64 pt-2 text-xs font-bold uppercase tracking-widest">
+                    Główny Instruktor BHP<br/>
+                    CleanSystem Poland
+                </div>
+            </div>
+        </div>
+
+        {/* Verification Code */}
+        <div className="absolute bottom-6 left-0 w-full text-center">
+             <p className="text-[10px] text-gray-400 font-mono">
+                ID CERTYFIKATU: <span className="text-gray-600 font-bold">{certificateId}</span> | DOKUMENT WYGENEROWANY ELEKTRONICZNIE
+             </p>
+        </div>
       </div>
     </div>
   );
