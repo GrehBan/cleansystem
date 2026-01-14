@@ -1,18 +1,20 @@
 import React from 'react';
 import { MODULES } from '../data';
 import { UserProgress, ModuleProgress } from '../types';
-import { CheckCircle2, Circle, LogOut } from 'lucide-react';
+import { CheckCircle2, Circle, LogOut, FileText } from 'lucide-react';
 
 interface SidebarProps {
   currentModuleId: string | null;
+  currentView?: string;
   onSelectModule: (id: string) => void;
+  onShowResources: () => void;
   progress: UserProgress;
   onShowDashboard: () => void;
   userName: string;
   onLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentModuleId, onSelectModule, progress, onShowDashboard, userName, onLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentModuleId, currentView, onSelectModule, onShowResources, progress, onShowDashboard, userName, onLogout }) => {
   return (
     <div className="w-full md:w-72 bg-surface border-r border-border flex flex-col h-screen sticky top-0">
       <div className="p-6 border-b border-border cursor-pointer" onClick={onShowDashboard}>
@@ -26,7 +28,22 @@ const Sidebar: React.FC<SidebarProps> = ({ currentModuleId, onSelectModule, prog
       </div>
 
       <div className="flex-1 overflow-y-auto py-4">
-        <div className="px-6 mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Moduły Szkoleniowe</div>
+        {/* Resources Link */}
+        <div className="px-6 mb-2">
+            <button 
+                onClick={onShowResources}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left border border-transparent ${
+                    currentView === 'resources'
+                    ? 'bg-card border-primary text-white'
+                    : 'bg-surface hover:bg-white/5 text-gray-400 hover:text-white'
+                }`}
+            >
+                <FileText size={20} className={currentView === 'resources' ? 'text-primary' : 'text-gray-500'} />
+                <div className="font-bold text-sm">Baza Wiedzy / SDS</div>
+            </button>
+        </div>
+
+        <div className="px-6 mb-2 mt-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Moduły Szkoleniowe</div>
         <nav className="space-y-1">
           {MODULES.map((module) => {
             const modProgress = progress[module.id];

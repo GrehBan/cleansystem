@@ -5,9 +5,10 @@ import Quiz from './components/Quiz';
 import Certificate from './components/Certificate';
 import LoginScreen from './components/LoginScreen';
 import AdminPanel from './components/AdminPanel';
+import Resources from './components/Resources';
 import { MODULES } from './data';
 import { User, UserProgress } from './types';
-import { ChevronRight, Home, BookOpen, Loader2 } from 'lucide-react';
+import { ChevronRight, Home, BookOpen, Loader2, FileText } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
@@ -46,7 +47,7 @@ const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   
   // --- APP STATE ---
-  const [currentView, setCurrentView] = useState<'dashboard' | 'module'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'module' | 'resources'>('dashboard');
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [activeLessonIndex, setActiveLessonIndex] = useState(0);
   const [isQuizMode, setIsQuizMode] = useState(false);
@@ -155,6 +156,11 @@ const App: React.FC = () => {
     setCurrentView('module');
     setActiveLessonIndex(0);
     setIsQuizMode(false);
+  };
+
+  const handleShowResources = () => {
+    setCurrentView('resources');
+    setActiveModuleId(null);
   };
 
   const handleLessonComplete = (moduleId: string, lessonIndex: number) => {
@@ -291,7 +297,9 @@ const App: React.FC = () => {
       <div className="hidden md:block print:hidden">
          <Sidebar 
             currentModuleId={activeModuleId} 
+            currentView={currentView}
             onSelectModule={handleSelectModule} 
+            onShowResources={handleShowResources}
             progress={currentUser.progress}
             onShowDashboard={() => {
                 setCurrentView('dashboard');
@@ -311,14 +319,14 @@ const App: React.FC = () => {
             <div className="flex items-center gap-4">
               <button 
                   onClick={() => {
-                      if(currentView === 'module') {
+                      if(currentView !== 'dashboard') {
                           setCurrentView('dashboard');
                           setActiveModuleId(null);
                       }
                   }}
                   className="text-xs font-bold text-gray-400"
               >
-                  {currentView === 'module' ? 'WRÓĆ' : 'MENU'}
+                  {currentView !== 'dashboard' ? 'WRÓĆ' : 'MENU'}
               </button>
             </div>
         </div>
@@ -328,7 +336,10 @@ const App: React.FC = () => {
             progress={currentUser.progress} 
             onSelectModule={handleSelectModule} 
             onPrintCertificate={() => handleDownloadCertificate(currentUser)}
+            onShowResources={handleShowResources}
           />
+        ) : currentView === 'resources' ? (
+          <Resources />
         ) : (
           activeModule && (
             <div className="p-6 md:p-12 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">

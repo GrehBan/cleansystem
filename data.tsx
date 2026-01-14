@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShieldAlert, FlaskConical, Wrench, Zap, Layers, Users, Recycle, Droplets, HeartPulse, Sparkles } from 'lucide-react';
-import { Module } from './types';
+import { ShieldAlert, FlaskConical, Wrench, Zap, Layers, Users, Recycle, Droplets, HeartPulse, Sparkles, Stethoscope, Utensils, Flame, Maximize } from 'lucide-react';
+import { Module, ResourceItem } from './types';
 
 export const MODULES: Module[] = [
   {
@@ -127,6 +127,203 @@ export const MODULES: Module[] = [
     ]
   },
   {
+    id: 'ppoz',
+    title: 'PPOŻ i Ewakuacja',
+    description: 'Bezpieczeństwo Pożarowe. Klasy pożarów (A, B, F), rodzaje gaśnic i procedura ewakuacyjna w obiektach komercyjnych.',
+    icon: Flame,
+    priority: 'BEZPIECZEŃSTWO',
+    priorityColor: 'text-primary',
+    passingScore: 100,
+    lessons: [
+        {
+            title: 'Lekcja 1: Klasy Pożarów i Gaśnice',
+            content: (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">01 // NIE KAŻDY OGIEŃ JEST TAKI SAM</h3>
+                    <p className="text-gray-300">
+                        Użycie niewłaściwej gaśnicy może zabić (np. gaszenie frytkownicy wodą).
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div className="bg-card p-4 rounded border border-border">
+                            <strong className="text-white text-lg block mb-2">Klasy Pożarów</strong>
+                            <ul className="list-disc pl-5 text-xs text-gray-400 space-y-2">
+                                <li><strong>A (Ciała stałe):</strong> Papier, drewno, tkaniny.</li>
+                                <li><strong>B (Ciecze):</strong> Paliwa, rozpuszczalniki, alkohole (Top Glass).</li>
+                                <li><strong>C (Gazy):</strong> Gaz ziemny, propan.</li>
+                                <li><strong>F (Tłuszcze jadalne):</strong> Olej w kuchni. <span className="text-danger font-bold">ZAKAZ UŻYWANIA WODY!</span></li>
+                            </ul>
+                        </div>
+                        <div className="bg-card p-4 rounded border border-border">
+                            <strong className="text-white text-lg block mb-2">Rodzaje Gaśnic</strong>
+                            <ul className="list-disc pl-5 text-xs text-gray-400 space-y-2">
+                                <li><strong>Proszkowa (ABC):</strong> Najpopularniejsza. Brudzi, ale gasi prawie wszystko.</li>
+                                <li><strong>Śniegowa (CO2):</strong> Do elektroniki i serwerowni. Nie zostawia śladów. Uwaga: temperatura -78°C (ryzyko odmrożenia rąk).</li>
+                                <li><strong>Płynowa (AF):</strong> Dedykowana do kuchni (tłuszcze).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            title: 'Lekcja 2: Ewakuacja i Oznaczenia',
+            content: (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">02 // ZIELONE ZNAKI</h3>
+                    <div className="bg-green-900/20 p-5 rounded border border-green-600">
+                         <strong className="text-green-400 block mb-2">Zasady Ewakuacji</strong>
+                         <ol className="list-decimal pl-5 text-sm text-gray-300 space-y-2">
+                             <li>Zachowaj spokój. Nie biegnij.</li>
+                             <li>Poruszaj się zgodnie z zielonymi znakami "Wyjście Ewakuacyjne".</li>
+                             <li>Nie używaj wind! (Mogą stać się pułapką dymową).</li>
+                             <li>Idź przy podłodze, jeśli jest dym (tam jest tlen).</li>
+                         </ol>
+                    </div>
+                </div>
+            )
+        }
+    ],
+    quiz: [
+        { id: 1, question: "Jaką gaśnicą ugasisz serwerownię lub komputer, aby go nie zniszczyć?", options: ["Wodną", "Proszkową (ABC)", "Śniegową (CO2)", "Kocem"], correctAnswer: 2 },
+        { id: 2, question: "Czy wolno gasić płonący olej na patelni wodą?", options: ["Tak, to najszybsza metoda", "BEZWZGLĘDNIE NIE (Wybuch)", "Tylko zimną wodą", "Tak, ale powoli"], correctAnswer: 1 },
+        { id: 3, question: "Co oznacza klasa pożaru F?", options: ["Gazy", "Tłuszcze jadalne (kuchnie)", "Metale", "Elektryka"], correctAnswer: 1 },
+        { id: 4, question: "Czy podczas pożaru wolno używać windy?", options: ["Tak, jest szybciej", "Nie, windy mogą się zablokować lub wciągnąć dym", "Tylko towarowej", "Zależy od piętra"], correctAnswer: 1 }
+    ]
+  },
+  {
+    id: 'med_hygiene',
+    title: 'Higiena Szpitalna (Medical)',
+    description: 'Standardy sprzątania w placówkach medycznych. Strefy czystości, plan higieny, dezynfekcja i odpady medyczne.',
+    icon: Stethoscope,
+    priority: 'MEDYCZNE',
+    priorityColor: 'text-blue-400',
+    passingScore: 100,
+    lessons: [
+        {
+            title: 'Lekcja 1: Strefy Czystości i Kolory',
+            content: (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-blue-400 font-mono border-b border-border pb-2">01 // STREFOWANIE EPIDEMIOLOGICZNE</h3>
+                    <p className="text-gray-300">
+                        W szpitalach i przychodniach obowiązuje ścisły podział na strefy, aby nie przenosić patogenów.
+                    </p>
+                    <div className="grid grid-cols-1 gap-4 mt-4">
+                        <div className="border-l-4 border-white bg-gray-800 p-4">
+                            <strong className="text-white">STREFA BIAŁA (Administracyjna)</strong>
+                            <p className="text-xs text-gray-400">Biura, korytarze wejściowe. Standard sprzątania: biurowy.</p>
+                        </div>
+                        <div className="border-l-4 border-gray-500 bg-gray-800 p-4">
+                            <strong className="text-gray-400">STREFA SZARA (Zabiegowa/Diagnostyczna)</strong>
+                            <p className="text-xs text-gray-400">Gabinety lekarskie, EKG. Wymagana dezynfekcja powierzchni dotykowych.</p>
+                        </div>
+                        <div className="border-l-4 border-red-500 bg-gray-800 p-4">
+                            <strong className="text-red-500">STREFA CZERWONA (Zakaźna/Operacyjna)</strong>
+                            <p className="text-xs text-gray-400">Sale operacyjne, izolatki. Mopy jednorazowe lub dedykowane. Dezynfekcja o pełnym spektrum (B, F, V, Tba, Sp).</p>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            title: 'Lekcja 2: Procedura Dezynfekcji i Odpady',
+            content: (
+                <div className="space-y-6">
+                     <h3 className="text-xl font-bold text-blue-400 font-mono border-b border-border pb-2">02 // KONTAKT I CZAS</h3>
+                     <div className="bg-card p-5 border border-blue-500/50 rounded">
+                         <strong className="text-white block mb-2">Zasada Czasu Kontaktu (Contact Time)</strong>
+                         <p className="text-sm text-gray-300 mb-4">
+                             Środek dezynfekujący NIE działa natychmiast. Powierzchnia musi pozostać wilgotna przez czas określony przez producenta (zazwyczaj 5-15 min). Wytarcie do sucha od razu = brak dezynfekcji.
+                         </p>
+                     </div>
+                     <div className="mt-6">
+                         <h4 className="text-lg font-bold text-white mb-3">Odpady Medyczne (Kodowanie)</h4>
+                         <div className="grid grid-cols-2 gap-4">
+                             <div className="bg-red-900/30 border border-red-600 p-3 rounded text-center">
+                                 <strong className="text-red-500 block">WOREK CZERWONY</strong>
+                                 <span className="text-xs text-gray-300">Odpady zakaźne (krew, organy, zużyte opatrunki). Wysoce niebezpieczne.</span>
+                             </div>
+                             <div className="bg-yellow-900/30 border border-yellow-600 p-3 rounded text-center">
+                                 <strong className="text-yellow-500 block">WOREK ŻÓŁTY</strong>
+                                 <span className="text-xs text-gray-300">Chemia medyczna, leki.</span>
+                             </div>
+                         </div>
+                     </div>
+                </div>
+            )
+        }
+    ],
+    quiz: [
+        { id: 1, question: "Jaki kolor worka jest przypisany do odpadów zakaźnych (krew)?", options: ["Czarny", "Niebieski", "Czerwony", "Żółty"], correctAnswer: 2 },
+        { id: 2, question: "Co to jest 'czas kontaktu' przy dezynfekcji?", options: ["Czas pracy pracownika", "Czas, przez który powierzchnia musi być mokra od środka, aby zabić bakterie", "Czas przerwy", "Data ważności"], correctAnswer: 1 },
+        { id: 3, question: "Czy mop ze strefy białej (korytarz) może być użyty w strefie czerwonej (sala operacyjna)?", options: ["Tak, jeśli jest czysty", "Absolutnie NIE", "Tylko w nocy", "Jeśli nikt nie widzi"], correctAnswer: 1 },
+        { id: 4, question: "Jakie spektrum dezynfekcji jest wymagane w strefach wysokiego ryzyka?", options: ["Tylko B (Bakterie)", "Pełne (B, F, V, Tba, Sp) - Bakterie, Grzyby, Wirusy, Prątki, Spory", "Woda z mydłem", "Zapachowe"], correctAnswer: 1 }
+    ]
+  },
+  {
+    id: 'haccp',
+    title: 'HACCP i Gastronomia',
+    description: 'Bezpieczeństwo żywności. Krytyczne Punkty Kontroli (CCP), mycie vs dezynfekcja w kuchni, alergeny i szkodniki.',
+    icon: Utensils,
+    priority: 'SANITARNE',
+    priorityColor: 'text-green-500',
+    passingScore: 95,
+    lessons: [
+        {
+            title: 'Lekcja 1: Mycie a Dezynfekcja w Kuchni',
+            content: (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-green-500 font-mono border-b border-border pb-2">01 // ETAPY PROCESU</h3>
+                    <p className="text-gray-300">
+                        W gastronomii "czyste" nie znaczy "bezpieczne". Proces musi przebiegać dwuetapowo.
+                    </p>
+                    <ol className="list-decimal pl-5 text-gray-300 space-y-4 mt-4">
+                        <li>
+                            <strong>Mycie Zasadnicze:</strong> Usunięcie widocznego brudu i tłuszczu (użycie detergentu, np. Gran Smog). To usuwa pożywkę dla bakterii.
+                        </li>
+                        <li>
+                            <strong>Spłukiwanie:</strong> Usunięcie resztek chemii myjącej.
+                        </li>
+                        <li>
+                            <strong>Dezynfekcja:</strong> Zabicie niewidocznych drobnoustrojów (Salmonella, Listeria) środkiem biobójczym.
+                        </li>
+                        <li>
+                            <strong>Płukanie końcowe:</strong> Wymagane, jeśli środek dezynfekujący nie jest dopuszczony do kontaktu z żywnością bez płukania.
+                        </li>
+                    </ol>
+                </div>
+            )
+        },
+        {
+            title: 'Lekcja 2: Zakażenia Krzyżowe i Alergeny',
+            content: (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-green-500 font-mono border-b border-border pb-2">02 // CROSS-CONTAMINATION</h3>
+                    <div className="bg-card p-5 border border-green-600/50 rounded">
+                        <strong className="text-white block mb-3">Złote Zasady HACCP</strong>
+                        <ul className="list-disc pl-5 text-sm text-gray-300 space-y-3">
+                            <li>
+                                <strong>Deski do krojenia:</strong> Używaj odpowiednich kolorów (Czerwona - surowe mięso, Zielona - warzywa). Nigdy nie myj ich razem w tym samym zlewie w tym samym czasie.
+                            </li>
+                            <li>
+                                <strong>Zlew porządkowy vs Zlew kuchenny:</strong> Mopa i ścierki do podłogi płuczemy TYLKO w zlewie porządkowym (brudownik). Nigdy w zlewie do mycia warzyw.
+                            </li>
+                            <li>
+                                <strong>Szkodniki:</strong> Zauważenie karalucha, myszy lub ich odchodów musi być natychmiast zgłoszone (Księga Kontroli Szkodników).
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            )
+        }
+    ],
+    quiz: [
+        { id: 1, question: "Jaka jest różnica między myciem a dezynfekcją?", options: ["To to samo", "Mycie usuwa brud, dezynfekcja zabija drobnoustroje", "Dezynfekcja jest do podłóg, mycie do naczyń", "Mycie jest ważniejsze"], correctAnswer: 1 },
+        { id: 2, question: "Gdzie wolno myć mopa w restauracji?", options: ["W zlewie do warzyw", "W zmywarce do naczyń", "Tylko w zlewie porządkowym (brudowniku)", "W umywalce do rąk"], correctAnswer: 2 },
+        { id: 3, question: "Co robisz, gdy zauważysz ślady szkodników (np. odchody myszy)?", options: ["Sprzątam i nic nie mówię", "Zgłaszam to natychmiast przełożonemu", "Zastawiam pułapkę sam", "Ignoruję"], correctAnswer: 1 },
+        { id: 4, question: "Dlaczego używamy różnych desek do mięsa i warzyw?", options: ["Dla estetyki", "Aby uniknąć przeniesienia bakterii z surowego mięsa na warzywa (zakażenie krzyżowe)", "Bo kucharz tak lubi", "Nie ma to znaczenia"], correctAnswer: 1 }
+    ]
+  },
+  {
     id: 'chem',
     title: 'Chemia Profesjonalna: Koło Sinnera i Tenzi',
     description: 'Zaawansowana chemia. Koło Sinnera, skala pH, zasady mieszania (ryzyko chloru) i karta charakterystyki.',
@@ -197,7 +394,7 @@ export const MODULES: Module[] = [
                     <span className="text-xs text-gray-400 text-right">Toalety, Pisuary, Rdza.<br/>Czas działania: 10 min.</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="font-bold text-green-400">TopEfekt Normal (pH 7)</span>
+                    <span className="font-bold text-green-400">TopEfekt Normal (pH 11)</span>
                     <span className="text-xs text-gray-400 text-right">Gres, Laminat, PCV.<br/>Bezpieczny, bez smug.</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-700 pb-2">
@@ -369,6 +566,67 @@ export const MODULES: Module[] = [
     ]
   },
   {
+      id: 'windows',
+      title: 'Techniki Okienne i Elewacje',
+      description: 'Mycie przeszkleń. Technika "S", obsługa skrobaka, praca na drabinie vs kij teleskopowy, woda demineralizowana.',
+      icon: Maximize,
+      priority: 'EKSPERCKIE',
+      priorityColor: 'text-secondary',
+      passingScore: 90,
+      lessons: [
+          {
+              title: 'Lekcja 1: Narzędzia i Technika "S"',
+              content: (
+                  <div className="space-y-6">
+                      <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">01 // S-MOTION</h3>
+                      <p className="text-gray-300">
+                          Profesjonaliści nie myją okien "góra-dół", lecz techniką "S" (wężem), aby nie odrywać gumy od szyby i nie zostawiać smug.
+                      </p>
+                      <ul className="list-disc pl-5 text-gray-300 space-y-3 mt-4">
+                          <li>
+                              <strong>Baranek (Myjka):</strong> Służy do namydlenia szyby i wzruszenia brudu.
+                          </li>
+                          <li>
+                              <strong>Ściągaczka (Rakla):</strong> Kluczowe narzędzie. Guma musi być ostra i wymienna (Soft na zimę, Hard na lato).
+                          </li>
+                          <li>
+                              <strong>Skrobak:</strong> Używaj TYLKO na mokrej szybie. Służy do usuwania farby, kleju, ptasich odchodów. <span className="text-danger font-bold">UWAGA: Nigdy nie cofaj skrobaka po szybie (ryzyko porysowania drobinami piasku).</span>
+                          </li>
+                      </ul>
+                  </div>
+              )
+          },
+          {
+              title: 'Lekcja 2: Bezpieczeństwo Pracy',
+              content: (
+                  <div className="space-y-6">
+                      <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">02 // DRABINA CZY KIJ?</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-card p-4 border border-border rounded">
+                              <strong className="text-white block mb-2">Drabina</strong>
+                              <p className="text-xs text-gray-400">
+                                  Wymaga asekuracji drugiej osoby. Ryzyko upadku. Zawsze zachowuj 3 punkty podparcia.
+                              </p>
+                          </div>
+                          <div className="bg-card p-4 border border-border rounded">
+                              <strong className="text-white block mb-2">Kij Teleskopowy / Woda Demi</strong>
+                              <p className="text-xs text-gray-400">
+                                  Praca z ziemi (do 20m). Bezpieczniejsza. Systemy wody demineralizowanej (czysta H2O) nie wymagają ściągania wody - wysychają bez plam.
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+              )
+          }
+      ],
+      quiz: [
+          { id: 1, question: "Czy wolno używać skrobaka na suchej szybie?", options: ["Tak", "Nie, grozi to porysowaniem szkła", "Tylko w narożnikach", "Zależy od marki"], correctAnswer: 1 },
+          { id: 2, question: "Jaka technika mycia okien jest profesjonalna?", options: ["Gazetą i octem", "Technika 'S' (ciągły ruch bez odrywania)", "Góra-dół", "Kolista"], correctAnswer: 1 },
+          { id: 3, question: "Co daje woda demineralizowana?", options: ["Nic", "Pozwala myć bez chemii i nie trzeba ściągać wody (brak osadu)", "Lepiej pachnie", "Jest tańsza"], correctAnswer: 1 },
+          { id: 4, question: "Ile punktów podparcia musisz mieć na drabinie?", options: ["Jeden", "Dwa", "Trzy (dwie nogi + ręka)", "Zero"], correctAnswer: 2 }
+      ]
+  },
+  {
     id: 'ergonomics',
     title: 'Ergonomia i Zdrowie Zawodowe',
     description: 'Długofalowe zdrowie. Normy dźwigania (Rozp. 2025/26), zapobieganie bólom kręgosłupa i cieśni nadgarstka.',
@@ -538,325 +796,395 @@ export const MODULES: Module[] = [
       { id: 5, question: "Co to jest Liquidator 3.0?", options: ["Środek chemiczny", "Specjalna szyna ze ściętymi końcówkami (brak detalowania)", "Wiadro", "Ścierka"], correctAnswer: 1 },
       { id: 6, question: "Czy wkład F*LIQ pozwala myć i ściągać tym samym narzędziem?", options: ["Tak", "Nie", "Tylko myć", "Tylko ściągać"], correctAnswer: 0 }
     ]
-  },
-  {
-    id: 'machinery',
-    title: 'Maszyny Karcher: SE 4 & WD 3',
-    description: 'Obsługa Karcher SE 4 (pranie) z użyciem odpieniacza oraz Karcher WD 3 (odkurzanie) z workami fizelinowymi.',
-    icon: Zap,
-    priority: 'ZAAWANSOWANE',
-    priorityColor: 'text-primary',
-    passingScore: 90,
-    lessons: [
-      {
-        title: 'Lekcja 1: Karcher SE 4 + Odpieniacz',
-        content: (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">01 // EKSTRAKCJA I OCHRONA</h3>
-            <p className="text-gray-300">
-              Karcher SE 4 służy do prania dywanów i tapicerki. Aby maszyna działała latami, musisz używać <strong>Tenzi Odpieniacz</strong>.
-            </p>
-            
-            <div className="bg-card p-5 rounded border border-border">
-                <strong className="text-white block mb-3 text-lg border-b border-gray-700 pb-2">Proces Prania</strong>
-                <ol className="list-decimal pl-5 text-sm text-gray-400 space-y-4">
-                    <li>
-                        <strong>Przygotowanie:</strong> Odkurz powierzchnię na sucho (WD 3).
-                    </li>
-                    <li>
-                        <strong>Zbiornik Czysty:</strong> Wlej wodę z <strong>Textil Wash</strong> (pH 9, Enzymy).
-                    </li>
-                    <li>
-                        <strong>Zbiornik Brudny (KLUCZOWE):</strong> Do pustego wiadra maszyny wlej 50ml <strong>Tenzi Odpieniacz</strong>. Brudna woda z dywanu zawiera resztki starych szamponów, które potwornie się pienią. Piana zassie się do turbiny i ją spali. Odpieniacz to likwiduje.
-                    </li>
-                    <li>
-                        <strong>Praca:</strong> Natryskujesz i odsysasz ruchem do siebie.
-                    </li>
-                </ol>
-            </div>
-          </div>
-        )
-      },
-      {
-        title: 'Lekcja 2: Karcher WD 3 - Worki Fleece',
-        content: (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">02 // ODKURZANIE PRZEMYSŁOWE</h3>
-            <p className="text-gray-300">
-              Karcher WD 3 to odkurzacz warsztatowy. W "Ultimate Basket" znajdują się do niego <strong>Worki Fizelinowe (Fleece)</strong>.
-            </p>
+  }
+];
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-               <div className="bg-surface p-5 border border-gray-600 rounded">
-                  <strong className="text-white block mb-2 text-lg">Worki Fizelinowe (Fleece)</strong>
-                  <p className="text-sm text-gray-400 mb-3">
-                    Białe, materiałowe worki z zestawu.
-                  </p>
-                  <ul className="list-disc pl-5 text-xs text-gray-300 space-y-2">
-                     <li><strong>Wytrzymałość:</strong> Nie pękają przy wciągnięciu gruzu, śrubek czy wilgotnego piasku (w przeciwieństwie do papierowych).</li>
-                     <li><strong>Filtracja:</strong> Zatrzymują drobny pył, chroniąc silnik i filtr główny.</li>
-                     <li><strong>Nigdy bez worka:</strong> Przy suchym odkurzaniu praca bez worka to śmierć dla silnika.</li>
-                  </ul>
-               </div>
-               
-               <div className="bg-surface p-5 border border-gray-600 rounded">
-                  <strong className="text-white block mb-2 text-lg">Konserwacja</strong>
-                  <ul className="list-disc pl-5 text-xs text-gray-300 space-y-2">
-                     <li>Po pracy opróżnij zbiornik.</li>
-                     <li>Wytrzep filtr harmonijkowy (na zewnątrz!).</li>
-                     <li>Sprawdź, czy wąż nie jest zatkany.</li>
-                  </ul>
-               </div>
-            </div>
-          </div>
-        )
-      }
+export const RESOURCES: ResourceItem[] = [
+  // TECHNIKA
+  {
+    id: 'karcher-se4',
+    category: 'Technika',
+    name: 'Karcher SE 4',
+    description: 'Odkurzacz piorący 1000W. Wielofunkcyjny 3w1. Pojemnik 4L/4L. Przeznaczony do czyszczenia powierzchni tekstylnych metodą ekstrakcji.',
+    links: [
+        'https://www.castorama.pl/odkurzacz-pioracy-karcher-se-4/4066529034540_CAPL.prd',
+        'https://eodkurzacz.pl/pl/p/Zestaw-ssawek-do-odkurzacza-Karcher-wd3/3732'
     ],
-    quiz: [
-      { id: 1, question: "Co musisz wlać do zbiornika brudnego w SE 4?", options: ["Więcej wody", "Tenzi Odpieniacz (Defoamer)", "Mydło", "Nic"], correctAnswer: 1 },
-      { id: 2, question: "Dlaczego używamy worków fizelinowych (Fleece) w WD 3?", options: ["Są ładniejsze", "Są wytrzymałe na rozerwanie i lepiej filtrują pył", "Są tańsze", "Nie trzeba ich używać"], correctAnswer: 1 },
-      { id: 3, question: "Do czego służy Textil Wash?", options: ["Do mycia okien", "Do prania dywanów i tapicerki (Enzymy)", "Do toalet", "Do stali"], correctAnswer: 1 },
-      { id: 4, question: "Co się stanie, jeśli piana dostanie się do turbiny odkurzacza?", options: ["Maszyna będzie lepiej prać", "Silnik może się spalić", "Nic", "Piana wyleci górą"], correctAnswer: 1 },
-      { id: 5, question: "Czy WD 3 można używać bez worka do suchego pyłu?", options: ["Tak", "Nie, to uszkodzi silnik", "Tylko w piątki", "Obojętnie"], correctAnswer: 1 },
-      { id: 6, question: "Jaka jest pierwsza faza prania dywanu?", options: ["Moczenie", "Odkurzanie na sucho (WD 3)", "Szorowanie", "Suszenie"], correctAnswer: 1 }
-    ]
+    sdsConfig: {
+        hazards: "Urządzenie elektryczne. Ryzyko porażenia prądem przy uszkodzonym przewodzie. Moc znamionowa: 1000W. Napięcie 220-240V.",
+        firstAid: "W razie porażenia odłączyć zasilanie. Rozpocząć RKO jeśli brak oddechu. Nie używać, jeśli kabel jest uszkodzony.",
+        ppe: "Obuwie na gumowej podeszwie, suche ręce. Stosować chemię (RM 519) zgodnie z instrukcją.",
+        ph: "Nie dotyczy (Urządzenie)",
+        contains: "Odkurzacz, Wąż 2w1, Dysza spryskująco-odsysająca",
+        storage: "Przechowywać w suchym miejscu. Po pracy opróżnić zbiorniki wody brudnej i czystej. Pozostawić otwarte do wyschnięcia.",
+        waste: "Zużyty sprzęt elektryczny (WEEE). Nie wyrzucać do śmieci komunalnych. Oddać do punktu zbiórki elektrośmieci.",
+        fire: "W razie pożaru urządzenia odłączyć od prądu. Gasić gaśnicą proszkową (ABC) lub śniegową. Nie używać wody pod napięciem."
+    }
   },
   {
-    id: 'surfaces',
-    title: 'Materiałoznawstwo: Powierzchnie',
-    description: 'Specyfika i rozpoznawanie materiałów. Stal Nierdzewna (konserwacja olejem), Chrom (odkamienianie) i podłogi.',
-    icon: Layers,
-    priority: 'EKSPERCKIE',
-    priorityColor: 'text-secondary',
-    passingScore: 90,
-    lessons: [
-      {
-        title: 'Lekcja 1: Stal Nierdzewna (INOX) vs Chrom',
-        content: (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">01 // INOX CZY CHROM?</h3>
-            <p className="text-gray-300">
-              W "Ultymatywnej Korzinie" masz dwa różne produkty do dwóch różnych metali. Nie pomyl ich!
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-              <div className="bg-surface p-5 border border-gray-600 rounded">
-                <strong className="text-white block mb-2 text-lg">Stal Nierdzewna (INOX)</strong>
-                <p className="text-sm text-gray-400 mb-2">Matowa (windy, lodówki, zmywarki).</p>
-                <div className="bg-gray-800 p-3 rounded text-xs text-gray-300">
-                  <strong>Produkt:</strong> Tenzi Stal Nierdzewna (Olej).
-                  <br/><br/>
-                  <strong>Procedura:</strong>
-                  1. Umyj powierzchnię (np. Top Glass) i wysusz.<br/>
-                  2. Natryśnij odrobinę oleju na ścierkę.<br/>
-                  3. Wetrzyj w stal zgodnie ze szlifem.<br/>
-                  Efekt: Jednolity kolor, brak śladów palców.
-                </div>
-              </div>
-              <div className="bg-surface p-5 border border-gray-600 rounded">
-                <strong className="text-white block mb-2 text-lg">Chrom</strong>
-                <p className="text-sm text-gray-400 mb-2">Błyszczący (krany, baterie).</p>
-                <div className="bg-gray-800 p-3 rounded text-xs text-gray-300">
-                   <strong>Produkt:</strong> WC Sani (Kwas) - tylko przy silnym kamieniu, lub Top Glass.<br/><br/>
-                   <strong>Procedura:</strong> Usuń kamień kwasem, spłucz wodą, wypoleruj do sucha. <strong className="text-danger">NIE OLEJUJ CHROMU!</strong> Będzie tłusty i matowy.
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      },
-      {
-         title: 'Lekcja 2: Podłogi (Gres, Laminat)',
-         content: (
-             <div className="space-y-6">
-                 <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">02 // PODŁOGI</h3>
-                 <div className="space-y-4 mt-4">
-                   <div className="bg-card p-4 rounded border-l-4 border-green-500">
-                      <strong className="text-white block mb-2">Codzienne Mycie</strong>
-                      <p className="text-sm text-gray-400">
-                        Używaj <strong>TopEfekt Normal</strong>. Jest neutralny, szybko wysycha i nie pozostawia smug na gresie polerowanym.
-                        <br/>
-                        Ważne: Mop musi być czysty (płukany w czerwonym wiadrze Splast).
-                      </p>
-                   </div>
-                 </div>
-             </div>
-         )
-      }
+    id: 'karcher-wd3',
+    category: 'Technika',
+    name: 'Karcher WD 3 Premium',
+    description: 'Odkurzacz przemysłowy uniwersalny. 1000W. Zbiornik stal nierdzewna 17L. Praca na sucho i mokro. Funkcja wydmuchu.',
+    links: [
+        'https://erpixkarcher24.pl/karcher-wd3/2002-wd-3-premium-s-v-19620-car-odkurzacz-kaercher-1628-1510-4054278923789.html',
+        'https://www.castorama.pl/departments/worki-do-odkurzaczy-przemys-owych-modeco-expert-karcher-wd-3-aqua-vac-einhell-opakowanie-kartonowe-3-szt-/5906675193304_CAPL.prd'
     ],
-    quiz: [
-      { id: 1, question: "Co robimy ze stalą nierdzewną (Inox) w windzie?", options: ["Myjemy kwasem", "Konserwujemy olejem (Tenzi Stal Nierdzewna)", "Szorujemy druciakiem", "Zostawiamy"], correctAnswer: 1 },
-      { id: 2, question: "Czy wolno olejować błyszczące krany chromowane?", options: ["Tak", "Nie, będą tłuste i matowe", "Tylko w soboty", "Zawsze"], correctAnswer: 1 },
-      { id: 3, question: "Jaki produkt służy do codziennego mycia podłóg?", options: ["TopEfekt Normal", "Gran Smog", "Stal Nierdzewna", "WC Sani"], correctAnswer: 0 },
-      { id: 4, question: "Co trzeba zrobić przed nałożeniem oleju na stal?", options: ["Umyć i wysuszyć powierzchnię", "Polać wodą", "Posypać piaskiem", "Nic"], correctAnswer: 0 },
-      { id: 5, question: "Czym grozi użycie kwasu (WC Sani) na marmurze?", options: ["Wyżarciem dziur (zniszczeniem)", "Lepiej umyje", "Niczym", "Będzie błyszczeć"], correctAnswer: 0 }
-    ]
+    sdsConfig: {
+        hazards: "Urządzenie elektryczne 1000W. Hałas > 75dB. Ryzyko wciągnięcia luźnych części odzieży. Pył (przy pracy bez worka).",
+        firstAid: "W przypadku porażenia odłączyć prąd. W przypadku zaprószenia oka pyłem - płukać wodą.",
+        ppe: "Nauszniki przeciwhałasowe (przy długiej pracy), maska przeciwpyłowa (przy opróżnianiu zbiornika), odzież przylegająca.",
+        usage: "Do pracy na sucho ZAWSZE używać worka filtracyjnego (Fleece). Do pracy na mokro wyjąć worek i używać filtra kartridżowego. Nie wciągać pyłów zapalnych (popiół).",
+        storage: "Opróżnić zbiornik po każdym użyciu. Przechowywać z dala od wilgoci.",
+        waste: "Elektrośmieci (WEEE). Oddać do utylizacji. Worki z pyłem: Odpady zmieszane (chyba że wciągano substancje niebezpieczne).",
+        fire: "Nie odkurzać żarzących się niedopałków ani popiołu! Ryzyko pożaru wewnątrz zbiornika."
+    }
   },
   {
-    id: 'softskills',
-    title: 'Model Operacyjny "Solo Pro" i RODO',
-    description: 'Standardy obsługi klienta Premium, etykieta pracy, ochrona danych osobowych (RODO) i logistyka sprzątania.',
-    icon: Users,
-    priority: 'BIZNESOWE',
-    priorityColor: 'text-primary',
-    passingScore: 100,
-    lessons: [
-      {
-        title: 'Lekcja 1: Standard Obsługi i Etykieta Premium',
-        content: (
-          <div className="space-y-6">
-             <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">01 // KLIENT PŁACI ZA ZAUFANIE</h3>
-             <p className="text-gray-300">
-               W modelu JEDG SOLO nie konkurujemy ceną, ale jakością i sprzętem. Klient widzi Twój profesjonalny sprzęt (Splast, Karcher, Moerman) i czuje się bezpiecznie.
-             </p>
-             
-             <div className="bg-card p-5 rounded border border-border mt-4">
-               <strong className="text-white block mb-3 text-lg">Złote Zasady "Solo Pro":</strong>
-               <ul className="list-disc pl-5 text-sm text-gray-400 space-y-3">
-                 <li><strong>Wizerunek:</strong> Używaj tylko profesjonalnych narzędzi z listy. Żadnych domowych wiader czy szmat.</li>
-                 <li><strong>Uczciwość:</strong> Posiadamy polisę OC. Jeśli stłuczesz wazon lub uszkodzisz chrom kwasem – <strong>zgłoś to natychmiast</strong>.</li>
-                 <li><strong>Klucze i Alarmy:</strong> Kodów alarmowych nie zapisuj w telefonie w jawnej formie. Klucze oznaczaj kodem, nie adresem.</li>
-               </ul>
-             </div>
-          </div>
-        )
-      },
-      {
-         title: 'Lekcja 2: RODO i Prywatność (Polityka Czystego Biurka)',
-         content: (
-             <div className="space-y-6">
-                 <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">02 // OCHRONA DANYCH</h3>
-                 <p className="text-gray-300">
-                    Jako personel sprzątający masz dostęp do tajemnic przedsiębiorstwa.
-                 </p>
-                 
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                    <div className="bg-surface p-5 border border-red-500 rounded">
-                        <strong className="text-red-500 block text-lg mb-2">ZAKAZY</strong>
-                        <ul className="list-disc pl-5 text-sm text-gray-300 space-y-2">
-                           <li><strong>Zero zdjęć:</strong> Zakaz fotografowania biur, dokumentów i ekranów.</li>
-                           <li><strong>Zero czytania:</strong> Dokumenty na biurku to puste kartki dla Ciebie.</li>
-                           <li><strong>Nie wyrzucaj dokumentów:</strong> Kartka na podłodze to nie śmieć (chyba że jest w koszu). Połóż ją na biurku.</li>
-                        </ul>
-                    </div>
-                    <div className="bg-surface p-5 border border-green-500 rounded">
-                        <strong className="text-green-500 block text-lg mb-2">DOBRE PRAKTYKI</strong>
-                        <ul className="list-disc pl-5 text-sm text-gray-300 space-y-2">
-                           <li><strong>Clean Desk Policy:</strong> Podnieś przedmiot, przetrzyj, odłóż w to samo miejsce.</li>
-                           <li><strong>Dyskrecja:</strong> "Co widziałeś u klienta, zostaje u klienta".</li>
-                        </ul>
-                    </div>
-                 </div>
-             </div>
-         )
-      },
-      {
-         title: 'Lekcja 3: Logistyka Sprzątania',
-         content: (
-             <div className="space-y-6">
-                 <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">03 // EFEKTYWNOŚĆ</h3>
-                 <div className="bg-surface p-5 border border-gray-600 rounded">
-                   <strong className="text-white block mb-3 text-lg">Kolejność Stref</strong>
-                   <ol className="list-decimal pl-5 text-sm text-gray-300 space-y-3">
-                     <li>
-                        <strong>Strefy Czyste (Biura):</strong> Zaczynamy tutaj świeżym mopem.
-                     </li>
-                     <li>
-                        <strong>Strefy Socjalne (Kuchnie):</strong> Średni brud.
-                     </li>
-                     <li>
-                        <strong>Strefy Brudne (Toalety):</strong> Sprzątamy na końcu. Mop po toalecie idzie do prania.
-                     </li>
-                   </ol>
-                   <div className="mt-4 pt-4 border-t border-gray-700">
-                      <strong className="text-white block mb-2">Zasada "Góra-Dół":</strong>
-                      <p className="text-sm text-gray-400">
-                        Najpierw kurze z szaf, na końcu odkurzanie (WD 3) i mycie podłóg (Splast).
-                      </p>
-                   </div>
-                 </div>
-             </div>
-         )
+      id: 'extinguisher-abc',
+      category: 'PPOŻ',
+      name: 'Gaśnica Proszkowa GP-6x ABC',
+      description: 'Gaśnica 6kg. Skuteczna dla grup pożarów A (ciała stałe), B (ciecze), C (gazy). Może gasić urządzenia pod napięciem do 1000V.',
+      links: ['https://www.ogniochron.eu/produkty/gasnice-proszkowe/gp-6x-abc'],
+      sdsConfig: {
+          hazards: "Proszek może podrażniać drogi oddechowe i oczy. Ogranicza widoczność podczas gaszenia.",
+          firstAid: "Wyprowadzić na świeże powietrze. Przemyć oczy wodą.",
+          ppe: "Maska przeciwpyłowa (przy sprzątaniu po użyciu).",
+          usage: "Wyciągnąć zawleczkę, skierować wąż na źródło ognia, nacisnąć dźwignię. Gasić z wiatrem.",
+          storage: "Miejsca widoczne, łatwo dostępne. Temp -30 do +60C. Przegląd co 12 miesięcy.",
+          waste: "Oddać do serwisu ppoż. Zużyty proszek jest odpadem innym niż niebezpieczne.",
+          fire: "Produkt gaśniczy."
       }
+  },
+  // SPRZĘT MANUALNY
+  {
+    id: 'moerman-excel',
+    category: 'Sprzęt Manualny',
+    name: 'Moerman Excelerator 2.0',
+    description: 'Uchwyt + Szyna Liquidator 3.0 + Wkład F*LIQ (Do mycia okien). Regulacja kąta: 10°, 25°, 40°.',
+    links: [
+        'https://allegro.pl/oferta/moerman-excelerator-liquidator-3-0-f-liq-25-cm-12805881580'
     ],
-    quiz: [
-      { id: 1, question: "Co robisz, gdy stłuczesz przedmiot u klienta?", options: ["Chowam do kosza", "Zgłaszam to natychmiast (OC)", "Sklejam", "Uciekam"], correctAnswer: 1 },
-      { id: 2, question: "Jaka jest kolejność sprzątania?", options: ["Toalety -> Biura", "Biura (Czyste) -> Kuchnie -> Toalety (Brudne)", "Obojętnie", "Od wejścia"], correctAnswer: 1 },
-      { id: 3, question: "Czy wolno czytać dokumenty leżące na biurku?", options: ["Tak, z ciekawości", "Nie, to naruszenie RODO", "Tylko nagłówki", "Jeśli leżą na podłodze to tak"], correctAnswer: 1 },
-      { id: 4, question: "Czy wolno robić zdjęcia w firmie klienta?", options: ["Tak", "Bezwzględnie NIE (chyba że jest zgoda)", "Tylko selfie", "Jak nikt nie widzi"], correctAnswer: 1 },
-      { id: 5, question: "Gdzie ląduje papier leżący na podłodze obok kosza?", options: ["W koszu", "Na biurku (to może być ważny dokument)", "W niszczarce", "W kieszeni"], correctAnswer: 1 }
-    ]
+    sdsConfig: {
+        hazards: "Ryzyko skaleczenia o ostre krawędzie szyny (rzadkie). Ryzyko uderzenia przy pracy na wysokości.",
+        firstAid: "Opatrzyć skaleczenia. Zdezynfekować ranę.",
+        ppe: "Rękawice robocze (opcjonalnie).",
+        usage: "Sprawdzić stan gumy przed użyciem. Ustawić kąt 25° lub 40° do pracy na kiju teleskopowym. Nie używać na sucho (rysuje szkło).",
+        storage: "Przechowywać w pozycji wiszącej, aby nie odkształcić gumy Liquidator.",
+        waste: "Guma i plastik - odpady zmieszane/tworzywa. Metal - złom.",
+        fire: "Produkt palny (plastik, tekstylia). Gasić wodą, pianą."
+    }
   },
   {
-    id: 'waste',
-    title: 'Gospodarka Odpadami (Segregacja)',
-    description: 'Szczegółowe zasady segregacji 5 frakcji, BHP przy obsłudze koszy i ekologia w biurze.',
-    icon: Recycle,
-    priority: 'PODSTAWOWE',
-    priorityColor: 'text-success',
-    passingScore: 90,
-    lessons: [
-      {
-        title: 'Lekcja 1: Jednolity System Segregacji (5 Frakcji)',
-        content: (
-          <div className="space-y-6">
-             <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">01 // KOLORY RECYKLINGU</h3>
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-sm mt-4">
-                 <div className="border border-blue-500 p-4 rounded bg-blue-900/10">
-                    <strong className="text-blue-400 block text-lg mb-2">PAPIER (Niebieski)</strong>
-                    <p className="text-gray-300 mb-2">Czysty papier, karton.</p>
-                    <div className="text-xs text-gray-500 bg-black/20 p-2 rounded">
-                        <strong>ZAKAZ:</strong> Tłusty papier, ręczniki, paragony.
-                    </div>
-                 </div>
-                 <div className="border border-yellow-500 p-4 rounded bg-yellow-900/10">
-                    <strong className="text-yellow-400 block text-lg mb-2">METALE I TWORZYWA (Żółty)</strong>
-                    <p className="text-gray-300 mb-2">Butelki PET, puszki, TetraPak (karton po mleku).</p>
-                 </div>
-                 <div className="border border-green-500 p-4 rounded bg-green-900/10">
-                    <strong className="text-green-500 block text-lg mb-2">SZKŁO (Zielony)</strong>
-                    <p className="text-gray-300 mb-2">Butelki i słoiki.</p>
-                 </div>
-                 <div className="border border-gray-500 p-4 rounded bg-gray-800">
-                    <strong className="text-gray-400 block text-lg mb-2">ZMIESZANE (Czarny)</strong>
-                    <p className="text-gray-300 mb-2">Zabrudzone, higieniczne, potłuczone szkło.</p>
-                 </div>
-             </div>
-          </div>
-        )
-      },
-      {
-         title: 'Lekcja 2: BHP przy Obsłudze Koszy',
-         content: (
-             <div className="space-y-6">
-                 <h3 className="text-xl font-bold text-danger font-mono border-b border-border pb-2">02 // UWAGA: OSTRZE!</h3>
-                 
-                 <div className="bg-danger/10 border border-danger p-5 rounded shadow-lg">
-                   <strong className="text-danger block text-xl mb-3">ZŁOTA ZASADA: "NIE DOCISKAJ"</strong>
-                   <p className="text-gray-300 leading-relaxed">
-                     Nigdy nie dociskaj śmieci w worku ręką ani nogą.
-                     <br/>W środku może być rozbite szkło lub igła.
-                   </p>
-                 </div>
-
-                 <div className="bg-card p-5 rounded border border-gray-600 mt-4">
-                   <strong className="text-white block mb-3">Procedura:</strong>
-                   <ol className="list-decimal pl-5 text-sm text-gray-400 space-y-2">
-                     <li>Wywiń krawędzie worka i zawiąż przed wyjęciem (nie wdychasz kurzu).</li>
-                     <li>Wyjmij worek, trzymając go z dala od nóg.</li>
-                     <li>Nie przesypuj śmieci między koszami (wzbijasz kurz).</li>
-                   </ol>
-                 </div>
-             </div>
-         )
-      }
+    id: 'telescope',
+    category: 'Sprzęt Manualny',
+    name: 'Kij Teleskopowy 3-4m',
+    description: 'Kij kompatybilny z systemem Moerman (praca z ziemi). Redukcja kątowa.',
+    links: [
+        'https://allegro.pl/oferta/moerman-kij-teleskopowy-3-czesciowy-4m-z-redukcja-katowa-wytrzymaly-18003339238'
     ],
-    quiz: [
-      { id: 1, question: "Gdzie wyrzucisz zużyty ręcznik papierowy?", options: ["Do papieru", "Do zmieszanych (Czarny)", "Do bio", "Do szkła"], correctAnswer: 1 },
-      { id: 2, question: "Gdzie wyrzucisz karton po mleku (TetraPak)?", options: ["Do papieru", "Do metali i tworzyw (Żółty)", "Do zmieszanych", "Do bio"], correctAnswer: 1 },
-      { id: 3, question: "Dlaczego nie wolno dociskać śmieci ręką?", options: ["To niehigieniczne", "Ryzyko skaleczenia (szkło, igły)", "Worek pęknie", "Szef zabrania"], correctAnswer: 1 },
-      { id: 4, question: "Gdzie wyrzucisz paragon?", options: ["Do papieru", "Do zmieszanych (druk termiczny)", "Do plastiku", "Do bio"], correctAnswer: 1 },
-      { id: 5, question: "Gdzie wyrzucisz potłuczoną szklankę?", options: ["Do szkła", "Do zmieszanych (inne szkło niż butelkowe)", "Do plastiku", "Do bio"], correctAnswer: 1 }
-    ]
+    sdsConfig: {
+        hazards: "Ryzyko porażenia prądem przy zahaczeniu o linie energetyczne (aluminium przewodzi prąd!). Uderzenie osób postronnych.",
+        firstAid: "W razie porażenia nie dotykać poszkodowanego przed odłączeniem napięcia.",
+        ppe: "Kask ochronny (przy pracy powyżej głowy), okulary (kapiąca woda).",
+        usage: "ZABRONIONE UŻYWANIE W POBLIŻU LINII ENERGETYCZNYCH. Blokować segmenty po rozsunięciu. Nie używać jako dźwigni.",
+        storage: "Złożony, w suchym miejscu. Wyczyścić piasek z gwintów.",
+        waste: "Aluminium - złom metali kolorowych.",
+        fire: "Niepalny (Aluminium). Elementy plastikowe mogą się topić."
+    }
+  },
+  {
+    id: 'splast-ts',
+    category: 'Sprzęt Manualny',
+    name: 'Splast TS-0004',
+    description: 'Wózek dwuwiaderkowy (2x25L) z prasą do wyciskania. Wiadro niebieskie (czyste), czerwone (brudne).',
+    links: [
+        'https://balmea.pl/pl/p/Wozek-do-sprzatania-Splast-TS-0004-dwuwiaderkowy-z-prasa-do-wyciskania/292'
+    ],
+    sdsConfig: {
+        hazards: "Ryzyko przytrzaśnięcia palców w prasie. Ryzyko przewrócenia wózka z gorącą wodą.",
+        firstAid: "Schłodzić oparzenia wodą. Opatrzyć zgniecenia.",
+        ppe: "Obuwie antypoślizgowe.",
+        usage: "Nie wkładać rąk do prasy podczas wyciskania. Prowadzić wózek, nie ciągnąć. Nie przeciążać.",
+        storage: "Wiadra opróżnione i wymyte. Prasa otwarta.",
+        waste: "Tworzywo PP - Recykling plastiku (Żółty pojemnik). Metalowe rączki - złom.",
+        fire: "Produkt palny (Polipropylen). W razie pożaru tworzy gęsty, toksyczny dym. Gasić pianą, proszkiem."
+    }
+  },
+  // CHEMIA (TENZI)
+  {
+    id: 'tenzi-normal',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi TopEfekt Normal',
+    description: 'Codzienne mycie posadzek twardych. Skoncentrowany preparat myjący. Nie pozostawia smug.',
+    links: ['https://tenzi.pl/topefektr-normal-10l'],
+    sdsConfig: {
+        hazards: "H318 Powoduje poważne uszkodzenie oczu. H315 Działa drażniąco na skórę (w koncentracie).",
+        ph: "11 (koncentrat), ok. 9 (roztwór roboczy)",
+        contains: "Alkohole tłuszczowe C11-13 rozgałęzione oksyetylenowane, Kumenosulfonian sodu.",
+        firstAid: "OCZY: Płukać wodą przez kilka minut. Wyjąć soczewki. SKÓRA: Zmyć wodą. POŁKNIĘCIE: Nie wywoływać wymiotów, pić wodę.",
+        ppe: "Rękawice ochronne (nitryl/neopren), okulary ochronne (przy przelewaniu koncentratu).",
+        storage: "Przechowywać w szczelnie zamkniętych opakowaniach w temp. 5-35°C. Chronić przed słońcem.",
+        usage: "Stężenie robocze: 50-100ml / 10L wody. Nie mieszać z kwasami.",
+        waste: "Kod 20 01 29* (Detergenty zawierające substancje niebezpieczne). Nie wylewać do wód gruntowych.",
+        fire: "Produkt niepalny. W razie pożaru otoczenia chłodzić pojemniki wodą."
+    }
+  },
+  {
+    id: 'tenzi-glass',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi Top Glass',
+    description: 'Mycie szyb, luster i powierzchni szklanych. Preparat gotowy do użycia. Nie pozostawia smug.',
+    links: ['https://tenzi.pl/top-glass-10l'],
+    sdsConfig: {
+        hazards: "H225 Wysoce łatwopalna ciecz i pary (zawiera Etanol). H319 Działa drażniąco na oczy.",
+        ph: "9 (Zasadowy)",
+        contains: "Etanol <4%, Rozpuszczalniki organiczne.",
+        firstAid: "OCZY: Ostrożnie płukać wodą. WDECH: Wyprowadzić na świeże powietrze. POŁKNIĘCIE: Przepłukać usta wodą.",
+        ppe: "Nie wymagane przy normalnym użyciu. Unikać wdychania rozpylonej mgły.",
+        storage: "Z dala od źródeł ciepła, iskier i ognia. Temp < 30°C. Wentylacja.",
+        usage: "Gotowy do użycia. Nanieść ze spryskiwacza, wytrzeć szmatką.",
+        waste: "Opakowania po produkcie: Tworzywa sztuczne. Resztki: Punkt zbiórki odpadów niebezpiecznych.",
+        fire: "Łatwopalny! Gasić pianą odporną na alkohole, CO2, proszkiem. Nie używać zwartego strumienia wody."
+    }
+  },
+  {
+    id: 'tenzi-wc',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi WC Sani',
+    description: 'Żel do mycia sanitariatów i odkamieniania. Usuwa kamień, rdzę i osady mydlane.',
+    links: ['https://tenzi.pl/wc-sani-10l'],
+    sdsConfig: {
+        hazards: "H314 Powoduje poważne oparzenia skóry oraz uszkodzenia oczu. H290 Może powodować korozję metali. H412 Działa szkodliwie na organizmy wodne.",
+        ph: "1 (Silny Kwas)",
+        contains: "Kwas fosforowy, Kwas amidosulfonowy, Bis(2-hydroksyetylo)oleiloamina.",
+        firstAid: "OCZY: Płukać natychmiast dużą ilością wody (min. 15 min). SKÓRA: Natychmiast zdjąć skażoną odzież, spłukać skórę. POŁKNIĘCIE: Wypłukać usta, NIE wywoływać wymiotów (ryzyko perforacji).",
+        ppe: "Rękawice kwasoodporne (Butyl/Viton), gogle ochronne szczelne, odzież ochronna.",
+        storage: "Przechowywać pod zamknięciem. Oryginalne opakowania. Nie przechowywać z metalami i alkaliami (chlorem).",
+        usage: "Nanieść na powierzchnię, odczekać 10 min, spłukać. NIE MIESZAĆ Z CHLOREM (Domestos) - Ryzyko zatrucia chlorem.",
+        waste: "Kod 20 01 14* (Kwasy). Nie wylewać do kanalizacji bez neutralizacji.",
+        fire: "Niepalny. W ogniu wydziela toksyczne tlenki fosforu i siarki. Gasić środkami odpowiednimi dla otoczenia."
+    }
+  },
+  {
+    id: 'tenzi-gran',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi Gran Smog',
+    description: 'Usuwanie tłustych zabrudzeń, sadzy, przypaleń (komory wędzarnicze, grille, piekarniki). Bardzo silny.',
+    links: ['https://tenzi.pl/gran-smog-extra-10l'],
+    sdsConfig: {
+        hazards: "H314 Powoduje poważne oparzenia skóry oraz uszkodzenia oczu. H290 Może powodować korozję metali (Aluminium).",
+        ph: "14 (Silna Zasada)",
+        contains: "Wodorotlenek potasu (KOH) > 10%, niejonowe środki powierzchniowo czynne.",
+        firstAid: "OCZY: Płukać natychmiast wodą (min. 15 min) - chronić nieuszkodzone oko. SKÓRA: Zdjąć odzież, zmywać dużą ilością wody. Wezwać lekarza. POŁKNIĘCIE: Podać wodę, nie wywoływać wymiotów.",
+        ppe: "Rękawice ochronne (neopren/nitryl - długie mankiety), osłona twarzy/przyłbica. Fartuch chemoodporny.",
+        storage: "Wyłącznie w pojemnikach z tworzywa sztucznego. Z dala od kwasów i aluminium.",
+        usage: "Rozcieńczać 500ml-1000ml / 10L wody. Nie stosować na aluminium i powierzchnie malowane proszkowo.",
+        waste: "Kod 20 01 15* (Alkalia). Utylizować jako odpad niebezpieczny.",
+        fire: "Niepalny. Reaguje z metalami lekkimi (Al, Zn) wydzielając Wodór (wybuchowy). Opakowania chłodzić wodą."
+    }
+  },
+  {
+    id: 'tenzi-ds1',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi DS-1 GT',
+    description: 'Gotowy preparat do dezynfekcji powierzchni (Biura, Szpitale). Spektrum: B, F, V, Tbc. Atest PZH.',
+    links: ['https://tenzi.pl/ds-1-gt-5l'],
+    sdsConfig: {
+        hazards: "H226 Łatwopalna ciecz i pary. H319 Działa drażniąco na oczy.",
+        ph: "7-8 (Neutralny)",
+        contains: "Etanol, Propan-2-ol, Glukoprotamina.",
+        firstAid: "Zapewnić dopływ świeżego powietrza. Przemyć oczy.",
+        ppe: "Rękawice ochronne.",
+        usage: "Spryskać powierzchnię (30ml/m2), pozostawić na 1 minutę. Nie wycierać do sucha przed upływem czasu kontaktu.",
+        storage: "Z dala od ognia. Temp. pokojowa.",
+        waste: "Nie wylewać do kanalizacji. Utylizacja jako odpad chemiczny.",
+        fire: "Łatwopalny."
+    }
+  },
+  {
+    id: 'tenzi-textil',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi Textil Wash',
+    description: 'Pranie dywanów i tapicerki metodą ekstrakcyjną lub szamponowania. Nie zawiera wybielaczy.',
+    links: ['https://tenzi.pl/textil-wash-10l'],
+    sdsConfig: {
+        hazards: "H319 Działa drażniąco na oczy. H315 Działa drażniąco na skórę.",
+        ph: "7 (Neutralny)",
+        contains: "Enzymy, Alkohole tłuszczowe, Kompozycje zapachowe.",
+        firstAid: "OCZY: Płukać wodą przez kilka minut. SKÓRA: Umyć wodą z mydłem.",
+        ppe: "Okulary ochronne (przy ryzyku rozprysku), rękawice ochronne gumowe.",
+        storage: "Temp 5-30°C. Chronić przed zamarznięciem (niszczy enzymy).",
+        usage: "100-400ml / 10L wody. Sprawdzić trwałość kolorów w niewidocznym miejscu.",
+        waste: "Kod 20 01 30 (Detergenty inne niż wymienione w 20 01 29).",
+        fire: "Produkt niepalny."
+    }
+  },
+  {
+    id: 'tenzi-steel',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi Stal Nierdzewna',
+    description: 'Odtłuszczanie i mycie stali nierdzewnej. Usuwa brud, tłuszcz i zacieki.',
+    links: ['https://tenzi.pl/steel-dee-gt-06l'],
+    sdsConfig: {
+        hazards: "H304 Połknięcie i dostanie się przez drogi oddechowe może grozić śmiercią (Zagrożenie aspiracją). EUH066 Powtarzające się narażenie może powodować wysuszanie lub pękanie skóry.",
+        ph: "N/D (Mieszanina olejowa)",
+        contains: "Węglowodory, C10-C13, n-alkany, izoalkany, cykliczne.",
+        firstAid: "POŁKNIĘCIE: NIE wywoływać wymiotów! Natychmiast wezwać lekarza. SKÓRA: Umyć wodą z mydłem. OCZY: Płukać wodą.",
+        ppe: "Rękawice ochronne olejoodporne (Nitryl).",
+        storage: "Z dala od źródeł ognia. Szczelnie zamknięte.",
+        usage: "Stosować bez rozcieńczania. Nanieść na szmatkę, rozprowadzić równomiernie.",
+        waste: "Kod 15 01 10* (Opakowania zawierające pozostałości substancji niebezpiecznych).",
+        fire: "Produkt palny. Gasić pianą, proszkiem, CO2. Nie używać wody."
+    }
+  },
+  {
+    id: 'tenzi-foam',
+    category: 'Chemia (Tenzi)',
+    name: 'Tenzi De Foam',
+    description: 'Środek zapobiegający powstawaniu piany w zbiornikach brudnej wody (odkurzacze, szorowarki).',
+    links: ['https://tenzi.sklep.pl/tenzi-de-foam-srodek-do-usuwania-piany-defoam-10l-p-339.html'],
+    sdsConfig: {
+        hazards: "Produkt nie jest klasyfikowany jako stwarzający zagrożenie (zgodnie z rozp. 1272/2008).",
+        ph: "7 (Neutralny)",
+        contains: "Emulsja silikonowa, konserwanty.",
+        firstAid: "OCZY: Płukać wodą profilaktycznie. SKÓRA: Zmyć wodą.",
+        ppe: "Nie wymagane. Zalecane ogólne środki higieny.",
+        storage: "Temp > 5°C. Chronić przed mrozem.",
+        usage: "Wlać 50-100ml do zbiornika BRUDNEJ wody przed rozpoczęciem pracy.",
+        waste: "Odpady komunalne (jeśli nie skażone innymi substancjami).",
+        fire: "Niepalny."
+    }
+  },
+  // BHP / PPE
+  {
+    id: 'kit-din',
+    category: 'BHP i Apteczka',
+    name: 'Apteczka DIN 13157',
+    description: 'Przemysłowa apteczka pierwszej pomocy + Płuczka do oczu',
+    links: [
+        'https://icd.pl/apteczka-standard-din-13157.html',
+        'https://icd.pl/plukanka-do-oczu-biophos74-500ml.html',
+        'https://icd.pl/plukanka-do-oczu-actiomedic-eye-care-500ml.html'
+    ],
+    sdsConfig: {
+        hazards: "Brak. Zestaw wyrobów medycznych.",
+        firstAid: "Stosować zgodnie z przeznaczeniem do opatrywania ran. Płuczka do oczu: jednorazowego użytku.",
+        ppe: "Używać rękawiczek jednorazowych z zestawu przy udzielaniu pomocy.",
+        storage: "Miejsce suche, łatwo dostępne, oznaczone krzyżem. Kontrolować daty ważności.",
+        waste: "Zużyte opatrunki traktować jako odpady medyczne/higieniczne.",
+        fire: "Opakowanie (plastik) palne.",
+        contains: "Plastry, bandaże, kompresy, koc ratunkowy, nożyczki, chusta trójkątna."
+    }
+  },
+  {
+    id: 'goggles',
+    category: 'BHP i Apteczka',
+    name: 'Gogle Ochronne (Zamknięte)',
+    description: 'Norma EN 166, powłoka Scotchgard',
+    links: ['https://www.3market-shop.pl/gg501sgaf-eu--przezroczyste--zamkniete-okulary-ochronne-z-powloka-scotchgard-/'],
+    sdsConfig: {
+        hazards: "Brak. Produkt ochronny.",
+        firstAid: "Nie dotyczy.",
+        ppe: "Stanowi środek ochrony wzroku klasy 1.",
+        storage: "W etui, chronić przed zarysowaniem. Myć wodą z mydłem, nie rozpuszczalnikami.",
+        waste: "Tworzywo sztuczne (Poliwęglan).",
+        usage: "Zakładać przy pracy z chemikaliami (przelewanie, dozowanie) oraz przy ryzyku odprysków.",
+        fire: "Polimer palny."
+    }
+  },
+  {
+    id: 'gloves-nitrile',
+    category: 'BHP i Apteczka',
+    name: 'Rękawice Nitrylowe',
+    description: 'Pudełko 100 szt., bezpudrowe. EN 374 (Ochrona chemiczna - typ B lub C).',
+    links: [
+        'https://www.harborfreight.com/9-mil-nitrile-powder-free-gloves-large-50-pack-68511.html',
+        'https://medimall.pl/en_US/p/Gloves-MAXSAFE-BLACK-size-L-nitrile-non-sterile-100-pcs/3385'
+    ],
+    sdsConfig: {
+        hazards: "Brak. Produkt hypoalergiczny (brak lateksu).",
+        firstAid: "W razie podrażnienia skóry dłoni zaprzestać używania, zastosować krem.",
+        ppe: "Stanowi środek ochrony rąk.",
+        storage: "Z dala od słońca i ozonu (niszczeją). Suche miejsce.",
+        usage: "Jednorazowe. Wymieniać po uszkodzeniu lub kontakcie z silną chemią > 15 min.",
+        waste: "Skażone chemią - zgodnie z kartą chemii. Nieskażone - zmieszane/tworzywa.",
+        fire: "Palne. Wydzielają toksyczny dym."
+    }
+  },
+  {
+    id: 'gloves-chem',
+    category: 'BHP i Apteczka',
+    name: 'Rękawice Chemoodporne',
+    description: 'Długie, do pracy z kwasami/zasadami (Gran Smog, WC Sani). Kategoria III. EN 388, EN 374.',
+    links: [
+        'https://bhp.pl/product/1118192196/rekawice-ochronne-rasolvex37-675-z-ansell'
+    ],
+    sdsConfig: {
+        hazards: "Brak.",
+        firstAid: "Nie dotyczy.",
+        ppe: "Ochrona rąk przed ryzykiem chemicznym i mechanicznym.",
+        usage: "Sprawdzić szczelność (nadmuchać) przed użyciem. Używać przy pracy z pH < 2 lub pH > 12.",
+        storage: "Wieszać do wyschnięcia. Nie zostawiać na słońcu.",
+        waste: "Utylizacja zgodnie z zanieczyszczeniem.",
+        fire: "Guma syntetyczna/Neopren. Palne.",
+        contains: "Neopren, bawełniana wyściółka."
+    }
+  },
+  {
+    id: 'masks',
+    category: 'BHP i Apteczka',
+    name: 'Maski FFP2 / FFP3',
+    description: 'Ochrona dróg oddechowych przed pyłem. Norma EN 149.',
+    links: [
+        'https://icd.pl/polmaska-3m-8822.html'
+    ],
+    sdsConfig: {
+        hazards: "Brak.",
+        firstAid: "Zapewnić swobodne oddychanie. Wymienić maskę przy oporach oddechu.",
+        ppe: "Ochrona układu oddechowego.",
+        usage: "Jednorazowa (oznaczenie NR) lub wielorazowa (R). Dopasować blaszkę nosową. Używać przy opróżnianiu odkurzacza.",
+        storage: "W oryginalnym opakowaniu, czyste miejsce.",
+        waste: "Odpady zmieszane (chyba że skażone pyłem toksycznym - azbest, pleśń).",
+        fire: "Palne."
+    }
+  },
+  // INNE
+  {
+    id: 'sign',
+    category: 'Inne',
+    name: 'Znak "Śliska Podłoga"',
+    description: 'Żółty potykacz ostrzegawczy. Wymagany przez przepisy BHP przy myciu podłóg w obiektach publicznych.',
+    links: [
+        'https://dla-przemyslu.pl/gabloty-i-powierzchnie-ekspozycyjne/1617-potykacz-ostrzegawczy-uwaga-sliska-podloga.html'
+    ],
+    sdsConfig: {
+        hazards: "Ryzyko potknięcia o znak, jeśli ustawiony w przejściu.",
+        firstAid: "Nie dotyczy.",
+        ppe: "Stosowanie znaku jest środkiem ochrony zbiorowej.",
+        usage: "Ustawiać ZAWSZE przed rozpoczęciem mycia podłogi na mokro. Usuwać dopiero po całkowitym wyschnięciu.",
+        storage: "Złożony na płasko.",
+        waste: "Tworzywo sztuczne (PP).",
+        fire: "Palny."
+    }
+  },
+  {
+    id: 'cup',
+    category: 'Inne',
+    name: 'Menzurka (Miarka)',
+    description: 'Do precyzyjnego dozowania chemii (100ml / 500ml). Polipropylen odporny na chemię.',
+    links: [
+        'https://mrcleaner.pl/en/bottles-and-washers/work-stuff-sizeer-measuring-cup-100ml'
+    ],
+    sdsConfig: {
+        hazards: "Brak.",
+        firstAid: "Nie dotyczy.",
+        ppe: "Używać rękawic przy nalewaniu chemii.",
+        usage: "Po użyciu wypłukać wodą. Nie mieszać różnych środków w jednej miarce bez płukania.",
+        storage: "Czysta i sucha.",
+        waste: "Plastik (PP).",
+        fire: "Palny.",
+        contains: "Polipropylen (PP)."
+    }
   }
 ];

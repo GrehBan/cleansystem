@@ -38,8 +38,29 @@ export interface User {
   id: string;
   name: string;
   role: 'admin' | 'worker';
-  password?: string; // Added password field
+  password?: string;
   progress: UserProgress;
   joinedDate: string;
   certificateId?: string;
+}
+
+export interface SDSConfig {
+  hazards: string;
+  firstAid: string;
+  ppe: string;
+  fire?: string;
+  storage?: string;
+  waste?: string;
+  ph?: string;
+  contains?: string;
+  usage?: string;
+}
+
+export interface ResourceItem {
+  id: string;
+  category: string;
+  name: string;
+  description: string;
+  links: string[];
+  sdsConfig?: SDSConfig;
 }
