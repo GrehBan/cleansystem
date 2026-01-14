@@ -1,59 +1,59 @@
 import React from 'react';
-import { ShieldAlert, FlaskConical, Wrench, Zap, Layers, Users, Recycle, FileText } from 'lucide-react';
+import { ShieldAlert, FlaskConical, Wrench, Zap, Layers, Users, Recycle, Droplets, HeartPulse, Sparkles } from 'lucide-react';
 import { Module } from './types';
 
 export const MODULES: Module[] = [
   {
     id: 'bhp',
-    title: 'BHP i Pierwsza Pomoc (2026)',
-    description: 'Kompleksowe wymogi prawne: Kodeks Pracy 2026, praca na wysokości, apteczka DIN 13157, środki ochrony indywidualnej (SUI) i dokumentacja RODO.',
+    title: 'BHP, Prawodawstwo i Sygnaliści (2026)',
+    description: 'Kompleksowe wymogi prawne: Kodeks Pracy, Ustawa o Sygnalistach, praca na wysokości, apteczka DIN 13157 i odpowiedzialność karna.',
     icon: ShieldAlert,
     priority: 'KRYTYCZNE',
     priorityColor: 'text-primary',
     passingScore: 100,
     lessons: [
       {
-        title: 'Lekcja 1: Podstawy Prawne i Oznakowanie (Dz.U. 2024 poz. 1327)',
+        title: 'Lekcja 1: Imperatyw Prawny i Odpowiedzialność',
         content: (
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">01 // IMPERATYW PRAWNY 2026</h3>
+            <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">01 // KODEKS PRACY I KARNOŚĆ</h3>
             
             <p className="text-gray-300 leading-relaxed">
-              W 2026 roku szkolenie BHP nie jest formalnością, lecz fundamentem legalności działania przedsiębiorstwa sprzątającego. Zgodnie ze znowelizowanym Art. 237³ Kodeksu Pracy, pracodawca ponosi pełną odpowiedzialność karną i finansową (kary PIP od 1 000 do 30 000 PLN) za dopuszczenie pracownika do pracy bez ważnego certyfikatu.
+              W 2026 roku branża czystości podlega rygorystycznym kontrolom PIP. Zgodnie z Art. 237³ KP, pracodawca i pracownik ponoszą solidarną odpowiedzialność za bezpieczeństwo.
             </p>
 
             <div className="bg-surface p-6 rounded border-l-4 border-primary shadow-lg">
-               <strong className="block text-white mb-4 text-lg border-b border-gray-700 pb-2">Matryca Szkoleń Obowiązkowych</strong>
+               <strong className="block text-white mb-4 text-lg border-b border-gray-700 pb-2">Hierarchia Odpowiedzialności</strong>
                <div className="space-y-4">
                  <div>
-                    <span className="text-secondary font-bold uppercase text-xs tracking-wider">Stanowiska Robotnicze (Sprzątanie)</span>
+                    <span className="text-danger font-bold uppercase text-xs tracking-wider">Wypadek Ciężki / Śmiertelny</span>
                     <p className="text-sm text-gray-300 mt-1">
-                      Szkolenie okresowe wymagane co <strong className="text-white">3 lata</strong>. Pierwsze szkolenie okresowe musi odbyć się w ciągu 12 miesięcy od daty zatrudnienia.
+                      Prokurator wkracza z urzędu (Art. 220 KK). Jeśli pracownik nie przestrzegał procedur (np. nie użył znaku "Śliska Podłoga"), może zostać uznany za współwinnego, co blokuje wypłatę odszkodowania z ZUS.
                     </p>
                  </div>
                  <div>
-                    <span className="text-danger font-bold uppercase text-xs tracking-wider">Prace Szczególnie Niebezpieczne</span>
+                    <span className="text-secondary font-bold uppercase text-xs tracking-wider">Ochrona Sygnalistów (Whistleblowing)</span>
                     <p className="text-sm text-gray-300 mt-1">
-                      Wykonywanie prac na wysokości powyżej 1 metra (np. mycie okien z drabiny) obliguje do szkolenia okresowego <strong className="text-white">co 1 rok</strong>.
+                      Zgodnie z ustawą o ochronie sygnalistów, każdy pracownik zgłaszający naruszenie BHP (np. brak rękawic, uszkodzona maszyna) jest chroniony prawnie przed zwolnieniem. Zgłoszenia są anonimowe.
                     </p>
                  </div>
                </div>
             </div>
 
             <div className="bg-yellow-900/20 p-5 rounded border border-yellow-600 mt-4">
-               <h4 className="font-bold text-yellow-500 mb-2 flex items-center gap-2">Oznakowanie Strefy Pracy</h4>
-               <p className="text-sm text-gray-300 mb-3">
-                 Zgodnie z przepisami, każda mokra powierzchnia w miejscu publicznym musi być oznaczona.
-               </p>
-               <ul className="list-disc pl-5 text-xs text-gray-400 space-y-1">
-                 <li><strong>Potykacz "UWAGA ŚLISKA PODŁOGA":</strong> Żółty znak ostrzegawczy jest prawnym wymogiem. Jego brak w momencie wypadku (poślizgnięcia się osoby postronnej) skutkuje automatyczną przegraną w sądzie i wypłatą odszkodowania z OC firmy.</li>
-               </ul>
+               <h4 className="font-bold text-yellow-500 mb-2 flex items-center gap-2">Procedura Wypadkowa</h4>
+               <ol className="list-decimal pl-5 text-xs text-gray-400 space-y-2">
+                 <li><strong>Zabezpiecz miejsce:</strong> Nikt inny nie może ucierpieć.</li>
+                 <li><strong>Udziel pomocy:</strong> Apteczka DIN 13157.</li>
+                 <li><strong>Zawiadom przełożonego:</strong> Natychmiast.</li>
+                 <li><strong>Nie zmieniaj niczego:</strong> Do czasu przybycia zespołu powypadkowego nie wolno sprzątać śladów wypadku (chyba że zagrażają życiu).</li>
+               </ol>
             </div>
           </div>
         )
       },
       {
-        title: 'Lekcja 2: Praca na Wysokości i Badania Lekarskie',
+        title: 'Lekcja 2: Praca na Wysokości i Badania',
         content: (
           <div className="space-y-6">
             <h3 className="text-xl font-bold text-danger font-mono border-b border-border pb-2">02 // PRACE WYSOKOŚCIOWE</h3>
@@ -61,26 +61,23 @@ export const MODULES: Module[] = [
             <div className="bg-danger/10 p-5 border border-danger rounded shadow-md">
               <strong className="text-danger block text-lg mb-2">Definicja Prawna (§105 Rozp. BHP)</strong>
               <p className="text-gray-300 leading-relaxed">
-                Za pracę na wysokości uznaje się każdą czynność wykonywaną na powierzchni znajdującej się co najmniej <strong>1,0 metr</strong> nad poziomem podłogi lub ziemi. 
+                Każda praca powyżej <strong>1,0 metra</strong> nad poziomem podłogi to praca na wysokości. Wymaga badań lekarskich z adnotacją "praca na wysokości".
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
                <div className="bg-card p-4 rounded border border-border">
-                 <h4 className="font-bold text-white mb-3 text-lg border-b border-gray-700 pb-2">Badania Wysokościowe</h4>
+                 <h4 className="font-bold text-white mb-3 text-lg border-b border-gray-700 pb-2">Orzecznictwo Lekarskie</h4>
                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li><span className="text-secondary font-bold">Do 3 metrów:</span> Badanie ogólne + orzeczenie o braku przeciwwskazań (częstotliwość co 3-5 lat).</li>
-                    <li><span className="text-danger font-bold">Powyżej 3 metrów:</span> Pełne badania specjalistyczne: okulista, neurolog, laryngolog (błędnik). Częstotliwość co 2-3 lata.</li>
+                    <li><span className="text-secondary font-bold">Do 3 metrów:</span> Badanie ogólne + błędnik. Częstotliwość: 3-5 lat.</li>
+                    <li><span className="text-danger font-bold">Powyżej 3 metrów:</span> Specjalistyczne (okulista, neurolog, laryngolog). Częstotliwość: 2-3 lata.</li>
                  </ul>
                </div>
                
                <div className="bg-card p-4 rounded border border-border">
-                 <h4 className="font-bold text-white mb-3 text-lg border-b border-gray-700 pb-2">Hierarchia Zabezpieczeń</h4>
-                 <p className="text-sm text-gray-400 mb-2">
-                     Najlepszym sposobem na uniknięcie ryzyka upadku jest... <strong>nie odrywanie stóp od ziemi</strong>.
-                 </p>
+                 <h4 className="font-bold text-white mb-3 text-lg border-b border-gray-700 pb-2">Eliminacja Ryzyka</h4>
                  <div className="bg-green-900/20 p-2 rounded border border-green-600/50 text-xs text-green-200">
-                     <strong>ROZWIĄZANIE SYSTEMOWE:</strong> Używanie kija teleskopowego Moerman (3m-4m) pozwala myć okna na I piętrze stojąc na ziemi. Eliminuje to konieczność pracy na drabinie i badań wysokościowych dla tej czynności.
+                     <strong>SYSTEM MOERMAN (3-4m):</strong> Używając kija teleskopowego, pracujesz z poziomu "zero". W świetle prawa <strong>nie jest to praca na wysokości</strong>, co eliminuje ryzyko upadku i wymóg szelek bezpieczeństwa.
                  </div>
                </div>
             </div>
@@ -88,209 +85,368 @@ export const MODULES: Module[] = [
         )
       },
       {
-        title: 'Lekcja 3: Apteczka Zakładowa (Standard DIN 13157)',
+        title: 'Lekcja 3: Apteczka i Ratownictwo Chemiczne',
         content: (
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">03 // RATOWNICTWO CHEMICZNE</h3>
-            <p className="text-gray-300 leading-relaxed">
-              W profesjonalnym sprzątaniu (ryzyko chemiczne) apteczka musi spełniać normę <strong>DIN 13157</strong>. Kluczowym dodatkiem w "Ultimate Basket" jest dedykowana płuczka do oczu.
+            <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">03 // ZASADY DIN 13157</h3>
+            <p className="text-gray-300">
+              W przypadku oparzenia chemicznego liczą się sekundy. Zwykła woda może nie wystarczyć przy silnych kwasach.
             </p>
 
             <div className="bg-surface p-6 rounded border border-gray-700 shadow-xl">
-               <div className="flex justify-between items-center mb-4 border-b border-gray-600 pb-2">
-                  <h4 className="text-lg font-bold text-white">Zawartość Dedykowana</h4>
-                  <span className="text-xs font-mono text-gray-500">ZGODNOŚĆ: DIN 13157 + Płuczka</span>
-               </div>
-               
                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm text-gray-400">
                   <div className="flex items-center gap-3 p-2 bg-card rounded border border-blue-500/30">
                      <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
                      <div>
-                        <strong className="text-white block">Płuczka do Oczu (500ml)</strong>
-                        <span className="text-xs">Neutralizator kwasów/zasad. Czas użycia: natychmiast po zachlapaniu oka chemią (np. WC Sani).</span>
+                        <strong className="text-white block">Płuczka do Oczu (Eye Wash)</strong>
+                        <span className="text-xs">Buforowy roztwór fosforanowy. Neutralizuje pH w oku. Czas płukania: min. 15 minut.</span>
                      </div>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-card rounded">
                     <div className="w-3 h-3 bg-danger rounded-full"></div>
                     <div>
-                        <strong className="text-white block">Koc Termiczny (NRC)</strong>
-                        <span className="text-xs">Ochrona przed wstrząsem.</span>
+                        <strong className="text-white block">Karta Charakterystyki (MSDS)</strong>
+                        <span className="text-xs">Dokument, który musisz pokazać ratownikowi medycznemu. Mówi, czym się zatrułeś.</span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 bg-card rounded">
-                     <div className="w-3 h-3 bg-success rounded-full"></div>
-                     <span>Zestaw plastrów wodoodpornych</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 bg-card rounded">
-                     <div className="w-3 h-3 bg-success rounded-full"></div>
-                     <span>Rękawiczki nitrylowe (min. 4 pary)</span>
                   </div>
                </div>
-            </div>
-          </div>
-        )
-      },
-      {
-        title: 'Lekcja 4: Środki Ochrony Indywidualnej (SUI)',
-        content: (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">04 // PPE: OSTATNIA LINIA OBRONY</h3>
-            <div className="space-y-6 mt-4">
-              <div className="bg-card p-5 rounded border border-border">
-                <h4 className="font-bold text-white mb-3 text-lg text-secondary">Ochrona Rąk (EN 374)</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-surface p-3 rounded">
-                        <strong className="text-blue-400 block mb-1">Nitryl Czarny/Niebieski (Krótkie)</strong>
-                        <p className="text-xs text-gray-400">Podstawowa ochrona higieniczna. Odporne na wirusy i słabą chemię (TopEfekt, Top Glass).</p>
-                    </div>
-                    <div className="bg-surface p-3 rounded border border-secondary/30">
-                        <strong className="text-purple-400 block mb-1">Rękawice Chemoodporne (Długie)</strong>
-                        <p className="text-xs text-gray-400"><strong>Wymagane</strong> przy pracy z koncentratami pH 1 (WC Sani) i pH 14 (Gran Smog). Długi mankiet chroni przedramię przed zalaniem.</p>
-                    </div>
-                </div>
-              </div>
-
-              <div className="bg-card p-5 rounded border border-border">
-                <h4 className="font-bold text-white mb-3 text-lg text-secondary">Ochrona Oczu i Twarzy (EN 166)</h4>
-                <ul className="list-disc pl-5 text-sm text-gray-400 space-y-2">
-                  <li>
-                    <strong>Gogle Ochronne (Zamknięte):</strong> Chronią przed mgłą chemiczną przy spryskiwaniu powierzchni pionowych (ściany, okna) i przelewaniu koncentratów.
-                  </li>
-                </ul>
-              </div>
+               <div className="mt-4 p-3 bg-red-900/20 border border-red-500/50 rounded text-xs text-red-300">
+                  <strong>Oparzenie Kwasem (WC Sani):</strong> Nie używaj mydła (reakcja egzotermiczna!). Płucz obficie chłodną wodą.
+               </div>
             </div>
           </div>
         )
       }
     ],
     quiz: [
-      { id: 1, question: "Co ile lat należy odnawiać szkolenie BHP na stanowisku robotniczym?", options: ["Co rok", "Co 3 lata", "Co 5 lat", "Tylko raz"], correctAnswer: 1 },
-      { id: 2, question: "Jaki sprzęt pozwala uniknąć pracy na drabinie przy myciu okien na wysokości 3m?", options: ["Podest roboczy", "Kij teleskopowy (3-4m)", "Stołek", "Krzesło obrotowe"], correctAnswer: 1 },
-      { id: 3, question: "Co należy zrobić natychmiast po zachlapaniu oka chemią?", options: ["Trzeć ręką", "Użyć płuczki do oczu z apteczki", "Zamknąć oko i czekać", "Iść do domu"], correctAnswer: 1 },
-      { id: 4, question: "Do czego służą długie rękawice chemoodporne?", options: ["Do mycia naczyń", "Do pracy z silnymi kwasami i zasadami (ochrona przedramienia)", "Do odkurzania", "Dla ozdoby"], correctAnswer: 1 },
-      { id: 5, question: "Gdzie należy postawić znak 'Uwaga Śliska Podłoga'?", options: ["W magazynie", "W miejscu mycia podłogi na mokro", "Na zewnątrz budynku", "Nigdzie"], correctAnswer: 1 },
-      { id: 6, question: "Jaka kara grozi za brak ważnego szkolenia BHP?", options: ["Pouczenie", "Brak kary", "Grzywna od 1 000 do 30 000 PLN", "Nagana"], correctAnswer: 2 }
+      { id: 1, question: "Kto odpowiada za BHP w miejscu pracy?", options: ["Tylko szef", "Tylko BHP-owiec", "Solidarnie pracodawca i pracownik", "Klient"], correctAnswer: 2 },
+      { id: 2, question: "Co to jest ustawa o sygnalistach?", options: ["Ochrona osób zgłaszających naruszenia", "System alarmowy", "Nakaz gwizdania", "Przepis drogowy"], correctAnswer: 0 },
+      { id: 3, question: "Jaka jest granica pracy na wysokości?", options: ["0.5 metra", "1.0 metr", "2.0 metry", "Drabina 3-stopniowa"], correctAnswer: 1 },
+      { id: 4, question: "Co robisz najpierw przy oparzeniu chemicznym oka?", options: ["Jadę do domu", "Używam płuczki do oczu / wody przez 15 min", "Wycieram ręcznikiem", "Nakładam krem"], correctAnswer: 1 },
+      { id: 5, question: "Czy za brak znaku 'Śliska Podłoga' grozi odpowiedzialność karna?", options: ["Tak, jeśli dojdzie do wypadku", "Nie, to tylko zalecenie", "Tylko finansowa", "Nie"], correctAnswer: 0 }
     ]
   },
   {
     id: 'chem',
-    title: 'Chemia Profesjonalna Tenzi & Dozowanie',
-    description: 'Niezbędnik Profesjonalisty Tenzi. Precyzyjne dozowanie (menzurka), skala pH, karta charakterystyki i zastosowanie produktów.',
+    title: 'Chemia Profesjonalna: Koło Sinnera i Tenzi',
+    description: 'Zaawansowana chemia. Koło Sinnera, skala pH, zasady mieszania (ryzyko chloru) i karta charakterystyki.',
     icon: FlaskConical,
     priority: 'TECHNICZNE',
     priorityColor: 'text-secondary',
     passingScore: 90,
     lessons: [
       {
-        title: 'Lekcja 1: Teoria Mycia i Skala pH',
+        title: 'Lekcja 1: Koło Sinnera - 4 Czynniki Czystości',
         content: (
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">01 // FUNDAMENTY WIEDZY</h3>
+            <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">01 // TACT: TEORIA MYCIA</h3>
             <p className="text-gray-300">
-              Profesjonalne sprzątanie opiera się na 4 filarach (Koło Sinnera) i chemicznym odczynie pH.
+              Każdy proces mycia składa się z 4 czynników. Jeśli odejmiesz jeden, musisz dodać inny.
             </p>
-            <div className="bg-card p-5 rounded border border-gray-600 mt-4">
-                <strong className="text-white block mb-3 text-lg">Skala pH (0-14)</strong>
-                <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                        <span className="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold w-16 text-center">pH 1</span>
-                        <span className="text-red-400 font-bold">WC Sani:</span>
-                        <span className="text-gray-400">KWAS. Usuwa kamień, rdzę, osady z toalet.</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold w-16 text-center">pH 7</span>
-                        <span className="text-green-400 font-bold">TopEfekt / Top Glass:</span>
-                        <span className="text-gray-400">NEUTRALNE. Codzienne mycie podłóg i szyb.</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold w-16 text-center">pH 9</span>
-                        <span className="text-orange-400 font-bold">Textil Wash:</span>
-                        <span className="text-gray-400">ENZYMY. Pranie dywanów.</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold w-16 text-center">pH 14</span>
-                        <span className="text-purple-400 font-bold">Gran Smog:</span>
-                        <span className="text-gray-400">ZASADA. Usuwa tłuszcz, przypalenia (kuchnia).</span>
-                    </div>
-                </div>
-            </div>
-          </div>
-        )
-      },
-      {
-        title: 'Lekcja 2: Produkty Specjalistyczne Tenzi',
-        content: (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">02 // SPECJAŁY "KORZINY"</h3>
-            <div className="space-y-4 mt-4">
-              {/* Tenzi Stal Nierdzewna */}
-              <div className="border border-gray-500 rounded bg-gray-900/5 overflow-hidden">
-                <div className="bg-gray-700/50 p-3 border-b border-gray-500 flex justify-between items-center">
-                   <strong className="text-gray-200 text-lg">Tenzi Stal Nierdzewna</strong>
-                   <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded font-bold">OLEJOWANIE</span>
-                </div>
-                <div className="p-4">
-                    <p className="text-sm text-gray-300 mb-2"><strong>Zastosowanie:</strong> Konserwacja stali matowej (windy, okapy).</p>
-                    <ul className="list-disc pl-5 text-xs text-gray-400 space-y-1">
-                        <li>Nie czyści, lecz <strong>konserwuje</strong>.</li>
-                        <li>Nadaje jednolity połysk, zapobiega "palcowaniu".</li>
-                        <li>Nigdy nie stosuj na podłogach (poślizg!).</li>
-                    </ul>
-                </div>
-              </div>
-
-              {/* Tenzi Odpieniacz */}
-              <div className="border border-blue-400 rounded bg-blue-900/5 overflow-hidden">
-                <div className="bg-blue-600/20 p-3 border-b border-blue-400 flex justify-between items-center">
-                   <strong className="text-blue-200 text-lg">Tenzi Odpieniacz (De-Foam)</strong>
-                   <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded font-bold">TECHNICZNY</span>
-                </div>
-                <div className="p-4">
-                    <p className="text-sm text-gray-300 mb-2"><strong>Zastosowanie:</strong> Dodatek do zbiornika brudnego w Karcher SE 4.</p>
-                    <ul className="list-disc pl-5 text-xs text-gray-400 space-y-1">
-                        <li>Wlewasz 50-100ml do zbiornika na brudną wodę.</li>
-                        <li><strong>Kluczowy dla maszyn:</strong> Zapobiega przedostaniu się piany do turbiny ssącej (ochrona silnika przed spaleniem).</li>
-                    </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      },
-      {
-        title: 'Lekcja 3: Precyzyjne Dozowanie (Menzurka)',
-        content: (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">03 // MATEMATYKA CZYSTOŚCI</h3>
-            <div className="bg-card p-5 rounded border border-border">
-               <strong className="text-white block mb-2 text-lg">Menzurka / Miarka (Measuring Cup)</strong>
-               <p className="text-sm text-gray-400 mb-3">
-                 "Lanie na oko" to amatorszczyzna. Zbyt mało chemii = brud zostaje. Zbyt dużo chemii = smugi, klejąca podłoga i strata pieniędzy.
-               </p>
-               <div className="bg-surface border border-gray-600 p-4 rounded text-sm text-gray-300">
-                 <strong className="block mb-2 text-secondary">Zasada Przeliczania (1:100):</strong>
-                 <ul className="list-disc pl-5 space-y-2">
-                    <li>Dla TopEfekt Normal (stężenie 50-100ml / 10L wody):</li>
-                    <li>Odmierz <strong>100ml</strong> w menzurce.</li>
-                    <li>Wlej do wiadra NIEBIESKIEGO (Splast).</li>
-                    <li>Dopełnij wodą do 10L.</li>
-                 </ul>
-                 <p className="mt-3 text-xs text-gray-500 italic">
-                   Przy pracy z silnymi koncentratami (Gran Smog) użycie miarki jest obowiązkowe dla bezpieczeństwa.
-                 </p>
+            
+            <div className="grid grid-cols-2 gap-4 mt-4">
+               <div className="bg-card p-4 rounded border border-blue-500/30">
+                  <strong className="text-blue-400 block text-lg">T - Temperature</strong>
+                  <p className="text-xs text-gray-400">Temperatura. Ciepła woda przyspiesza reakcje, ale wrzątek niszczy polimery i uwalnia opary chloru.</p>
                </div>
+               <div className="bg-card p-4 rounded border border-green-500/30">
+                  <strong className="text-green-400 block text-lg">A - Agitation</strong>
+                  <p className="text-xs text-gray-400">Akcja mechaniczna. Szorowanie (pad, szczotka, mikrofibra). To robi maszyna lub Twoja ręka.</p>
+               </div>
+               <div className="bg-card p-4 rounded border border-purple-500/30">
+                  <strong className="text-purple-400 block text-lg">C - Chemical</strong>
+                  <p className="text-xs text-gray-400">Chemia. Rodzaj (pH) i stężenie. WC Sani, Gran Smog.</p>
+               </div>
+               <div className="bg-card p-4 rounded border border-yellow-500/30">
+                  <strong className="text-yellow-400 block text-lg">T - Time</strong>
+                  <p className="text-xs text-gray-400">Czas. Chemia musi "popracować". Np. 5-10 minut dla odkamieniacza.</p>
+               </div>
+            </div>
+            <div className="mt-2 text-xs text-gray-500 italic">
+               Przykład: Jeśli używasz słabszej chemii (C), musisz mocniej szorować (A) lub dłużej czekać (T).
+            </div>
+          </div>
+        )
+      },
+      {
+        title: 'Lekcja 2: Śmiertelne Błędy (Chlor + Kwas)',
+        content: (
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-danger font-mono border-b border-border pb-2">02 // NEVER MIX</h3>
+            <div className="bg-red-900/30 border border-red-500 p-6 rounded text-center">
+                <h4 className="text-3xl font-black text-white mb-4">CHLOR + KWAS = ŚMIERĆ</h4>
+                <p className="text-gray-300 mb-4">
+                    Nigdy nie łącz produktów chlorowych (wybielacze, Domestos, anty-pleśń) z produktami kwaśnymi (WC Sani, odkamieniacz).
+                </p>
+                <div className="bg-black/40 p-4 rounded text-left text-sm text-red-200 font-mono">
+                    Reakcja: NaOCl + 2HCl → Cl2 + H2O + NaCl<br/>
+                    Wynik: Wydziela się <strong>GAZOWY CHLOR (Bojowy środek trujący)</strong>. Powoduje poparzenie płuc, odmę i śmierć przez uduszenie.
+                </div>
+            </div>
+          </div>
+        )
+      },
+      {
+        title: 'Lekcja 3: Produkty Tenzi (Zastosowanie)',
+        content: (
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-secondary font-mono border-b border-border pb-2">03 // KOSZYK PRODUKTOWY</h3>
+            <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="font-bold text-red-400">WC Sani (pH 1)</span>
+                    <span className="text-xs text-gray-400 text-right">Toalety, Pisuary, Rdza.<br/>Czas działania: 10 min.</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="font-bold text-green-400">TopEfekt Normal (pH 7)</span>
+                    <span className="text-xs text-gray-400 text-right">Gres, Laminat, PCV.<br/>Bezpieczny, bez smug.</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="font-bold text-purple-400">Gran Smog (pH 14)</span>
+                    <span className="text-xs text-gray-400 text-right">Tłuszcz, Okapy, Piekarniki.<br/>WYMAGANE RĘKAWICE!</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="font-bold text-blue-400">De-Foam (Odpieniacz)</span>
+                    <span className="text-xs text-gray-400 text-right">Do maszyn (Karcher SE 4).<br/>Chroni turbinę.</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="font-bold text-gray-400">Stal Nierdzewna (Olej)</span>
+                    <span className="text-xs text-gray-400 text-right">Tylko konserwacja (nie mycie).<br/>Windy, drzwi matowe.</span>
+                </div>
             </div>
           </div>
         )
       }
     ],
     quiz: [
-      { id: 1, question: "Który środek Tenzi ma pH 1 i służy do mycia toalet?", options: ["Top Glass", "WC Sani", "Gran Smog", "Stal Nierdzewna"], correctAnswer: 1 },
-      { id: 2, question: "Do czego służy Tenzi Odpieniacz?", options: ["Do mycia okien", "Do usuwania piany w zbiorniku brudnym (ochrona turbiny)", "Do dezynfekcji", "Do polerowania"], correctAnswer: 1 },
-      { id: 3, question: "Czym dozujemy chemię, aby zachować idealne proporcje?", options: ["Na oko", "Szklanką", "Menzurką / Miarką", "Wlewamy całą butelkę"], correctAnswer: 2 },
-      { id: 4, question: "Jaki odczyn pH ma Gran Smog (do tłuszczu)?", options: ["1 (Kwas)", "7 (Neutralny)", "14 (Silna Zasada)", "0 (Woda)"], correctAnswer: 2 },
-      { id: 5, question: "Na jakich powierzchniach stosujemy Tenzi Stal Nierdzewna?", options: ["Podłogi", "Szyby", "Powierzchnie pionowe INOX (windy, okapy)", "Toalety"], correctAnswer: 2 },
-      { id: 6, question: "Co robimy przed użyciem chemii?", options: ["Wąchamy", "Czytamy etykietę i Kartę Charakterystyki", "Mieszamy z inną", "Podgrzewamy"], correctAnswer: 1 }
+      { id: 1, question: "Co się stanie po zmieszaniu chloru z kwasem?", options: ["Powstanie lepszy środek", "Wydzieli się trujący gazowy chlor", "Powstanie woda", "Nic"], correctAnswer: 1 },
+      { id: 2, question: "Co oznacza litera 'A' w Kole Sinnera?", options: ["Agitation (Akcja mechaniczna)", "Alkohol", "Auto", "Agresja"], correctAnswer: 0 },
+      { id: 3, question: "Jaki odczyn pH ma Gran Smog?", options: ["1 (Kwas)", "7 (Neutralny)", "14 (Zasada)", "0"], correctAnswer: 2 },
+      { id: 4, question: "Dlaczego potrzebujemy czasu (Time) przy myciu toalet?", options: ["Żeby odpocząć", "Żeby kwas zdążył rozpuścić kamień", "Bo tak mówi szef", "Nie potrzebujemy"], correctAnswer: 1 },
+      { id: 5, question: "Który produkt służy do codziennego mycia gresu?", options: ["WC Sani", "TopEfekt Normal", "Gran Smog", "Odpieniacz"], correctAnswer: 1 }
+    ]
+  },
+  {
+    id: 'sanitary_pro',
+    title: 'Sanitariaty PRO: System 4 Kolorów',
+    description: 'Zaawansowana higiena. Zapobieganie zakażeniom krzyżowym, kod kolorystyczny ścierek i procedura mycia toalety.',
+    icon: Droplets,
+    priority: 'KRYTYCZNE',
+    priorityColor: 'text-danger',
+    passingScore: 100,
+    lessons: [
+      {
+        title: 'Lekcja 1: Kod Kolorystyczny (Cross-Contamination)',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-danger font-mono border-b border-border pb-2">01 // BARIERA MIKROBIOLOGICZNA</h3>
+             <p className="text-gray-300">
+                Nie możesz wytrzeć deski sedesowej, a potem tą samą ścierką biurka. To przenoszenie bakterii kałowych (E.Coli). Używamy ścierek z mikrofibry w 4 kolorach.
+             </p>
+             
+             <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="bg-red-900/20 border border-red-500 p-4 rounded text-center">
+                   <div className="w-8 h-8 bg-red-600 mx-auto rounded-full mb-2"></div>
+                   <strong className="text-red-400 block">CZERWONY</strong>
+                   <span className="text-xs text-gray-300">Obszar wysokiego ryzyka: Wnętrze muszli, deska sedesowa, pisuar.</span>
+                </div>
+                <div className="bg-yellow-900/20 border border-yellow-500 p-4 rounded text-center">
+                   <div className="w-8 h-8 bg-yellow-500 mx-auto rounded-full mb-2"></div>
+                   <strong className="text-yellow-400 block">ŻÓŁTY</strong>
+                   <span className="text-xs text-gray-300">Reszta łazienki: Umywalki, kafelki ścienne, lustra, klamki łazienkowe.</span>
+                </div>
+                <div className="bg-blue-900/20 border border-blue-500 p-4 rounded text-center">
+                   <div className="w-8 h-8 bg-blue-500 mx-auto rounded-full mb-2"></div>
+                   <strong className="text-blue-400 block">NIEBIESKI</strong>
+                   <span className="text-xs text-gray-300">Ogólny: Meble biurowe, biurka, parapety, szyby, poręcze.</span>
+                </div>
+                <div className="bg-green-900/20 border border-green-500 p-4 rounded text-center">
+                   <div className="w-8 h-8 bg-green-500 mx-auto rounded-full mb-2"></div>
+                   <strong className="text-green-400 block">ZIELONY</strong>
+                   <span className="text-xs text-gray-300">Spożywczy: Blaty kuchenne, stoły w jadalni.</span>
+                </div>
+             </div>
+          </div>
+        )
+      },
+      {
+        title: 'Lekcja 2: Procedura Mycia Toalety',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-danger font-mono border-b border-border pb-2">02 // KROK PO KROKU</h3>
+             <ol className="list-decimal pl-5 text-gray-300 space-y-3">
+                <li><strong>Spłucz wodę:</strong> Usuń luźne zabrudzenia.</li>
+                <li><strong>Aplikacja Chemii (Czerwony):</strong> Nanieś WC Sani (kwas) pod obrzeże muszli i do wnętrza. Zostaw na 10 minut.</li>
+                <li><strong>Strefa czysta (Żółty):</strong> W czasie gdy kwas działa w muszli, umyj lustro, umywalkę i dozowniki ścierką żółtą.</li>
+                <li><strong>Szorowanie:</strong> Użyj szczotki do toalet, szorując dokładnie pod obrzeżem.</li>
+                <li><strong>Dezynfekcja (Czerwony):</strong> Przetrzyj deskę, spłuczkę i klamkę ścierką czerwoną z płynem dezynfekującym.</li>
+                <li><strong>Podłoga:</strong> Na samym końcu umyj podłogę mopem (zaczynając od najdalszego rogu do wyjścia).</li>
+             </ol>
+             <div className="mt-4 bg-gray-800 p-3 rounded text-xs text-gray-400 italic border-l-2 border-red-500">
+                Ważne: Nigdy nie wkładaj szczotki do toalety z powrotem do pojemnika, jeśli jest brudna. Spłucz ją wodą w muszli.
+             </div>
+          </div>
+        )
+      }
+    ],
+    quiz: [
+      { id: 1, question: "Jaki kolor ścierki służy do mycia deski sedesowej?", options: ["Niebieski", "Żółty", "Czerwony", "Zielony"], correctAnswer: 2 },
+      { id: 2, question: "Jaki kolor ścierki służy do mycia biurka?", options: ["Czerwony", "Niebieski", "Zielony", "Żółty"], correctAnswer: 1 },
+      { id: 3, question: "Dlaczego stosujemy kolory ścierek?", options: ["Dla ładnego wyglądu", "Aby zapobiec przenoszeniu bakterii kałowych (zakażenia krzyżowe)", "Żeby się nie nudzić", "Bo są tańsze"], correctAnswer: 1 },
+      { id: 4, question: "Co myjemy najpierw?", options: ["Podłogę", "Umywalkę i lustro", "Wnętrze muszli", "Klamki"], correctAnswer: 1 },
+      { id: 5, question: "Do czego służy kolor zielony?", options: ["Do toalet", "Do obszarów spożywczych (kuchnia)", "Do okien", "Do podłóg"], correctAnswer: 1 }
+    ]
+  },
+  {
+    id: 'polymers',
+    title: 'Polimeryzacja i Ochrona Podłóg',
+    description: 'Poziom Ekspert: Rozpoznawanie podłóg, stripping (zdzieranie), neutralizacja i nakładanie powłok polimerowych (akryl).',
+    icon: Sparkles,
+    priority: 'EKSPERCKIE',
+    priorityColor: 'text-purple-400',
+    passingScore: 95,
+    lessons: [
+      {
+        title: 'Lekcja 1: Rozpoznawanie Podłoża (Linoleum vs PCV)',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-purple-400 font-mono border-b border-border pb-2">01 // DIAGNOZA</h3>
+             <p className="text-gray-300">
+                Zanim wylejesz silną chemię (Stripper pH 13), musisz wiedzieć, co to za podłoga. Pomyłka kosztuje tysiące złotych (zniszczona wykładzina).
+             </p>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div className="bg-surface border border-gray-600 p-4 rounded">
+                   <strong className="text-white text-lg">LINOLEUM (Naturalne)</strong>
+                   <ul className="list-disc pl-5 text-xs text-gray-400 mt-2 space-y-1">
+                      <li>Zapach oleju lnianego przy pocieraniu (test spinacza - rozgrzej spinacz, przyłóż w niewidocznym miejscu).</li>
+                      <li>Wrażliwe na wysokie pH (>10).</li>
+                      <li><strong>Zagrożenie:</strong> "Wypalenie" (żółte plamy) przy użyciu zbyt silnego strippera.</li>
+                   </ul>
+                </div>
+                <div className="bg-surface border border-gray-600 p-4 rounded">
+                   <strong className="text-white text-lg">PCV / WINYL (Sztuczne)</strong>
+                   <ul className="list-disc pl-5 text-xs text-gray-400 mt-2 space-y-1">
+                      <li>Zapach plastiku/chloru przy teście ognia.</li>
+                      <li>Odporne na chemię zasadową.</li>
+                      <li>Najpopularniejsze w szpitalach i szkołach.</li>
+                   </ul>
+                </div>
+             </div>
+          </div>
+        )
+      },
+      {
+        title: 'Lekcja 2: Proces Polimeryzacji (Akryl)',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-purple-400 font-mono border-b border-border pb-2">02 // PROCES GLOSS</h3>
+             <div className="bg-card p-5 rounded border border-border">
+                <ol className="list-decimal pl-5 text-sm text-gray-300 space-y-4">
+                   <li>
+                      <strong>Stripping (Zdzieranie):</strong> Nałóż roztwór Strippera (czas: 15 min). Szoruj maszyną jednotarczową z czarnym padem. Zbierz brud odkurzaczem wodnym.
+                   </li>
+                   <li>
+                      <strong>Neutralizacja (Kluczowe!):</strong> Umyj podłogę czystą wodą 2 razy. Jeśli pH podłogi pozostanie zasadowe (wysokie), nowy polimer się "zważy" (odpryśnie) po tygodniu.
+                   </li>
+                   <li>
+                      <strong>Wysychanie:</strong> Podłoga musi być idealnie sucha.
+                   </li>
+                   <li>
+                      <strong>Nakładanie:</strong> Nałóż 3 cienkie warstwy polimeru (akrylu) mopem z mikrofibry (ruchy ósemkowe). Czas schnięcia między warstwami: 45-60 min.
+                   </li>
+                </ol>
+             </div>
+          </div>
+        )
+      }
+    ],
+    quiz: [
+      { id: 1, question: "Co się stanie, jeśli nałożysz silny stripper (pH 13) na naturalne Linoleum?", options: ["Nic", "Podłoga będzie czystsza", "Dojdzie do trwałego odbarwienia (zniszczenia)", "Będzie błyszczeć"], correctAnswer: 2 },
+      { id: 2, question: "Dlaczego trzeba zneutralizować podłogę wodą po strippingu?", options: ["Żeby usunąć resztki chemii i obniżyć pH", "Żeby była mokra", "Nie trzeba", "Żeby ładnie pachniała"], correctAnswer: 0 },
+      { id: 3, question: "Ile warstw polimeru zazwyczaj nakładamy?", options: ["1 grubą", "3 cienkie", "10", "Żadnej"], correctAnswer: 1 },
+      { id: 4, question: "Czym nakładamy polimer?", options: ["Szmatą", "Czystym mopem z mikrofibry (baranek)", "Szczotką", "Ręką"], correctAnswer: 1 },
+      { id: 5, question: "Jakim ruchem nakładamy polimer?", options: ["Góra-dół", "Ósemkowym", "Kolistym", "Byle jak"], correctAnswer: 1 }
+    ]
+  },
+  {
+    id: 'ergonomics',
+    title: 'Ergonomia i Zdrowie Zawodowe',
+    description: 'Długofalowe zdrowie. Normy dźwigania (Rozp. 2025/26), zapobieganie bólom kręgosłupa i cieśni nadgarstka.',
+    icon: HeartPulse,
+    priority: 'ZDROWIE',
+    priorityColor: 'text-success',
+    passingScore: 100,
+    lessons: [
+      {
+        title: 'Lekcja 1: Normy Dźwigania i Technika',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">01 // KRĘGOSŁUP MASZ JEDEN</h3>
+             <p className="text-gray-300">
+                Większość urazów w sprzątaniu to nie upadki, ale przewlekłe zwyrodnienia kręgosłupa (L4-L5).
+             </p>
+             
+             <div className="bg-surface p-5 border border-green-600 rounded mt-4">
+                <strong className="text-white block mb-3 text-lg">Limity Prawne (Praca Stała)</strong>
+                <div className="grid grid-cols-2 gap-4 text-center">
+                   <div className="bg-card p-3 rounded">
+                      <span className="text-gray-400 text-xs">KOBIETY</span>
+                      <strong className="block text-2xl text-white">12 kg</strong>
+                   </div>
+                   <div className="bg-card p-3 rounded">
+                      <span className="text-gray-400 text-xs">MĘŻCZYŹNI</span>
+                      <strong className="block text-2xl text-white">30 kg</strong>
+                   </div>
+                </div>
+                <p className="mt-4 text-xs text-gray-400">
+                   *Praca dorywcza (do 4x na godzinę): Kobiety 20kg, Mężczyźni 50kg.
+                </p>
+             </div>
+             
+             <div className="bg-card p-5 mt-4 border-l-4 border-success">
+                <strong className="text-white block mb-2">Technika Podnoszenia (Wiadro 20L)</strong>
+                <ul className="list-disc pl-5 text-sm text-gray-300 space-y-2">
+                   <li>Podejdź blisko obiektu.</li>
+                   <li>Rozstaw nogi szeroko.</li>
+                   <li><strong>Zegnij kolana, nie plecy!</strong></li>
+                   <li>Podnoś pracą nóg, trzymając wiadro blisko ciała.</li>
+                </ul>
+             </div>
+          </div>
+        )
+      },
+      {
+        title: 'Lekcja 2: Zespół Cieśni Nadgarstka',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">02 // CHOROBA ZAWODOWA</h3>
+             <p className="text-gray-300">
+                Częste wyżymanie szmat i mopa ręcznie prowadzi do uszkodzenia nerwów w nadgarstku.
+             </p>
+             <div className="bg-blue-900/20 p-5 rounded border border-blue-500 mt-4">
+                <strong className="text-blue-400 block mb-2">Prewencja Systemowa</strong>
+                <ul className="list-disc pl-5 text-sm text-gray-300 space-y-2">
+                   <li>
+                      <strong>Używaj prasy w wózku Splast:</strong> Prasa została wymyślona po to, byś nie musiał wyżymać ręcznie. Używaj jej zawsze, nawet do małych mopów.
+                   </li>
+                   <li>
+                      <strong>Technika Ósemkowa:</strong> Przy myciu podłogi nie "pychaj" mopa przód-tył (obciąża lędźwie), lecz prowadź go swobodnie po łuku (ósemki). Wykorzystuj pęd mopa.
+                   </li>
+                   <li>
+                      <strong>Kij teleskopowy:</strong> Ustaw go tak, aby rączka była na wysokości Twojej brody. Zbyt krótki kij wymusza garbienie się.
+                   </li>
+                </ul>
+             </div>
+          </div>
+        )
+      }
+    ],
+    quiz: [
+      { id: 1, question: "Jaki jest limit dźwigania dla kobiet przy pracy stałej?", options: ["50 kg", "12 kg", "30 kg", "20 kg"], correctAnswer: 1 },
+      { id: 2, question: "Jak bezpiecznie podnieść ciężkie wiadro?", options: ["Na prostych nogach, zginając plecy", "Zginając kolana, plecy proste", "Szybkim szarpnięciem", "Nie podnosić wcale"], correctAnswer: 1 },
+      { id: 3, question: "Co zapobiega cieśni nadgarstka?", options: ["Używanie prasy do wyciskania", "Ręczne wyżymanie", "Brak przerw", "Mocne ściskanie kija"], correctAnswer: 0 },
+      { id: 4, question: "Na jakiej wysokości powinien kończyć się kij do mopa?", options: ["Na wysokości kolan", "Na wysokości brody/nosa", "Powyżej głowy", "Obojętnie"], correctAnswer: 1 },
+      { id: 5, question: "Jaki ruch mopa jest najbardziej ergonomiczny?", options: ["Przód-tył", "Ósemkowy", "Szorujący w miejscu", "Skaczący"], correctAnswer: 1 }
     ]
   },
   {
@@ -534,6 +690,173 @@ export const MODULES: Module[] = [
       { id: 3, question: "Jaki produkt służy do codziennego mycia podłóg?", options: ["TopEfekt Normal", "Gran Smog", "Stal Nierdzewna", "WC Sani"], correctAnswer: 0 },
       { id: 4, question: "Co trzeba zrobić przed nałożeniem oleju na stal?", options: ["Umyć i wysuszyć powierzchnię", "Polać wodą", "Posypać piaskiem", "Nic"], correctAnswer: 0 },
       { id: 5, question: "Czym grozi użycie kwasu (WC Sani) na marmurze?", options: ["Wyżarciem dziur (zniszczeniem)", "Lepiej umyje", "Niczym", "Będzie błyszczeć"], correctAnswer: 0 }
+    ]
+  },
+  {
+    id: 'softskills',
+    title: 'Model Operacyjny "Solo Pro" i RODO',
+    description: 'Standardy obsługi klienta Premium, etykieta pracy, ochrona danych osobowych (RODO) i logistyka sprzątania.',
+    icon: Users,
+    priority: 'BIZNESOWE',
+    priorityColor: 'text-primary',
+    passingScore: 100,
+    lessons: [
+      {
+        title: 'Lekcja 1: Standard Obsługi i Etykieta Premium',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">01 // KLIENT PŁACI ZA ZAUFANIE</h3>
+             <p className="text-gray-300">
+               W modelu JEDG SOLO nie konkurujemy ceną, ale jakością i sprzętem. Klient widzi Twój profesjonalny sprzęt (Splast, Karcher, Moerman) i czuje się bezpiecznie.
+             </p>
+             
+             <div className="bg-card p-5 rounded border border-border mt-4">
+               <strong className="text-white block mb-3 text-lg">Złote Zasady "Solo Pro":</strong>
+               <ul className="list-disc pl-5 text-sm text-gray-400 space-y-3">
+                 <li><strong>Wizerunek:</strong> Używaj tylko profesjonalnych narzędzi z listy. Żadnych domowych wiader czy szmat.</li>
+                 <li><strong>Uczciwość:</strong> Posiadamy polisę OC. Jeśli stłuczesz wazon lub uszkodzisz chrom kwasem – <strong>zgłoś to natychmiast</strong>.</li>
+                 <li><strong>Klucze i Alarmy:</strong> Kodów alarmowych nie zapisuj w telefonie w jawnej formie. Klucze oznaczaj kodem, nie adresem.</li>
+               </ul>
+             </div>
+          </div>
+        )
+      },
+      {
+         title: 'Lekcja 2: RODO i Prywatność (Polityka Czystego Biurka)',
+         content: (
+             <div className="space-y-6">
+                 <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">02 // OCHRONA DANYCH</h3>
+                 <p className="text-gray-300">
+                    Jako personel sprzątający masz dostęp do tajemnic przedsiębiorstwa.
+                 </p>
+                 
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div className="bg-surface p-5 border border-red-500 rounded">
+                        <strong className="text-red-500 block text-lg mb-2">ZAKAZY</strong>
+                        <ul className="list-disc pl-5 text-sm text-gray-300 space-y-2">
+                           <li><strong>Zero zdjęć:</strong> Zakaz fotografowania biur, dokumentów i ekranów.</li>
+                           <li><strong>Zero czytania:</strong> Dokumenty na biurku to puste kartki dla Ciebie.</li>
+                           <li><strong>Nie wyrzucaj dokumentów:</strong> Kartka na podłodze to nie śmieć (chyba że jest w koszu). Połóż ją na biurku.</li>
+                        </ul>
+                    </div>
+                    <div className="bg-surface p-5 border border-green-500 rounded">
+                        <strong className="text-green-500 block text-lg mb-2">DOBRE PRAKTYKI</strong>
+                        <ul className="list-disc pl-5 text-sm text-gray-300 space-y-2">
+                           <li><strong>Clean Desk Policy:</strong> Podnieś przedmiot, przetrzyj, odłóż w to samo miejsce.</li>
+                           <li><strong>Dyskrecja:</strong> "Co widziałeś u klienta, zostaje u klienta".</li>
+                        </ul>
+                    </div>
+                 </div>
+             </div>
+         )
+      },
+      {
+         title: 'Lekcja 3: Logistyka Sprzątania',
+         content: (
+             <div className="space-y-6">
+                 <h3 className="text-xl font-bold text-primary font-mono border-b border-border pb-2">03 // EFEKTYWNOŚĆ</h3>
+                 <div className="bg-surface p-5 border border-gray-600 rounded">
+                   <strong className="text-white block mb-3 text-lg">Kolejność Stref</strong>
+                   <ol className="list-decimal pl-5 text-sm text-gray-300 space-y-3">
+                     <li>
+                        <strong>Strefy Czyste (Biura):</strong> Zaczynamy tutaj świeżym mopem.
+                     </li>
+                     <li>
+                        <strong>Strefy Socjalne (Kuchnie):</strong> Średni brud.
+                     </li>
+                     <li>
+                        <strong>Strefy Brudne (Toalety):</strong> Sprzątamy na końcu. Mop po toalecie idzie do prania.
+                     </li>
+                   </ol>
+                   <div className="mt-4 pt-4 border-t border-gray-700">
+                      <strong className="text-white block mb-2">Zasada "Góra-Dół":</strong>
+                      <p className="text-sm text-gray-400">
+                        Najpierw kurze z szaf, na końcu odkurzanie (WD 3) i mycie podłóg (Splast).
+                      </p>
+                   </div>
+                 </div>
+             </div>
+         )
+      }
+    ],
+    quiz: [
+      { id: 1, question: "Co robisz, gdy stłuczesz przedmiot u klienta?", options: ["Chowam do kosza", "Zgłaszam to natychmiast (OC)", "Sklejam", "Uciekam"], correctAnswer: 1 },
+      { id: 2, question: "Jaka jest kolejność sprzątania?", options: ["Toalety -> Biura", "Biura (Czyste) -> Kuchnie -> Toalety (Brudne)", "Obojętnie", "Od wejścia"], correctAnswer: 1 },
+      { id: 3, question: "Czy wolno czytać dokumenty leżące na biurku?", options: ["Tak, z ciekawości", "Nie, to naruszenie RODO", "Tylko nagłówki", "Jeśli leżą na podłodze to tak"], correctAnswer: 1 },
+      { id: 4, question: "Czy wolno robić zdjęcia w firmie klienta?", options: ["Tak", "Bezwzględnie NIE (chyba że jest zgoda)", "Tylko selfie", "Jak nikt nie widzi"], correctAnswer: 1 },
+      { id: 5, question: "Gdzie ląduje papier leżący na podłodze obok kosza?", options: ["W koszu", "Na biurku (to może być ważny dokument)", "W niszczarce", "W kieszeni"], correctAnswer: 1 }
+    ]
+  },
+  {
+    id: 'waste',
+    title: 'Gospodarka Odpadami (Segregacja)',
+    description: 'Szczegółowe zasady segregacji 5 frakcji, BHP przy obsłudze koszy i ekologia w biurze.',
+    icon: Recycle,
+    priority: 'PODSTAWOWE',
+    priorityColor: 'text-success',
+    passingScore: 90,
+    lessons: [
+      {
+        title: 'Lekcja 1: Jednolity System Segregacji (5 Frakcji)',
+        content: (
+          <div className="space-y-6">
+             <h3 className="text-xl font-bold text-success font-mono border-b border-border pb-2">01 // KOLORY RECYKLINGU</h3>
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-sm mt-4">
+                 <div className="border border-blue-500 p-4 rounded bg-blue-900/10">
+                    <strong className="text-blue-400 block text-lg mb-2">PAPIER (Niebieski)</strong>
+                    <p className="text-gray-300 mb-2">Czysty papier, karton.</p>
+                    <div className="text-xs text-gray-500 bg-black/20 p-2 rounded">
+                        <strong>ZAKAZ:</strong> Tłusty papier, ręczniki, paragony.
+                    </div>
+                 </div>
+                 <div className="border border-yellow-500 p-4 rounded bg-yellow-900/10">
+                    <strong className="text-yellow-400 block text-lg mb-2">METALE I TWORZYWA (Żółty)</strong>
+                    <p className="text-gray-300 mb-2">Butelki PET, puszki, TetraPak (karton po mleku).</p>
+                 </div>
+                 <div className="border border-green-500 p-4 rounded bg-green-900/10">
+                    <strong className="text-green-500 block text-lg mb-2">SZKŁO (Zielony)</strong>
+                    <p className="text-gray-300 mb-2">Butelki i słoiki.</p>
+                 </div>
+                 <div className="border border-gray-500 p-4 rounded bg-gray-800">
+                    <strong className="text-gray-400 block text-lg mb-2">ZMIESZANE (Czarny)</strong>
+                    <p className="text-gray-300 mb-2">Zabrudzone, higieniczne, potłuczone szkło.</p>
+                 </div>
+             </div>
+          </div>
+        )
+      },
+      {
+         title: 'Lekcja 2: BHP przy Obsłudze Koszy',
+         content: (
+             <div className="space-y-6">
+                 <h3 className="text-xl font-bold text-danger font-mono border-b border-border pb-2">02 // UWAGA: OSTRZE!</h3>
+                 
+                 <div className="bg-danger/10 border border-danger p-5 rounded shadow-lg">
+                   <strong className="text-danger block text-xl mb-3">ZŁOTA ZASADA: "NIE DOCISKAJ"</strong>
+                   <p className="text-gray-300 leading-relaxed">
+                     Nigdy nie dociskaj śmieci w worku ręką ani nogą.
+                     <br/>W środku może być rozbite szkło lub igła.
+                   </p>
+                 </div>
+
+                 <div className="bg-card p-5 rounded border border-gray-600 mt-4">
+                   <strong className="text-white block mb-3">Procedura:</strong>
+                   <ol className="list-decimal pl-5 text-sm text-gray-400 space-y-2">
+                     <li>Wywiń krawędzie worka i zawiąż przed wyjęciem (nie wdychasz kurzu).</li>
+                     <li>Wyjmij worek, trzymając go z dala od nóg.</li>
+                     <li>Nie przesypuj śmieci między koszami (wzbijasz kurz).</li>
+                   </ol>
+                 </div>
+             </div>
+         )
+      }
+    ],
+    quiz: [
+      { id: 1, question: "Gdzie wyrzucisz zużyty ręcznik papierowy?", options: ["Do papieru", "Do zmieszanych (Czarny)", "Do bio", "Do szkła"], correctAnswer: 1 },
+      { id: 2, question: "Gdzie wyrzucisz karton po mleku (TetraPak)?", options: ["Do papieru", "Do metali i tworzyw (Żółty)", "Do zmieszanych", "Do bio"], correctAnswer: 1 },
+      { id: 3, question: "Dlaczego nie wolno dociskać śmieci ręką?", options: ["To niehigieniczne", "Ryzyko skaleczenia (szkło, igły)", "Worek pęknie", "Szef zabrania"], correctAnswer: 1 },
+      { id: 4, question: "Gdzie wyrzucisz paragon?", options: ["Do papieru", "Do zmieszanych (druk termiczny)", "Do plastiku", "Do bio"], correctAnswer: 1 },
+      { id: 5, question: "Gdzie wyrzucisz potłuczoną szklankę?", options: ["Do szkła", "Do zmieszanych (inne szkło niż butelkowe)", "Do plastiku", "Do bio"], correctAnswer: 1 }
     ]
   }
 ];
