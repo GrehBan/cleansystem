@@ -16,12 +16,12 @@ export interface Module {
   id: string;
   title: string;
   description: string;
-  icon: React.ElementType; // Changed from 'any' to specific React Component type for Lucide icons
+  icon: React.ElementType;
   priority: string;
   priorityColor: string;
   lessons: LessonSection[];
   quiz: Question[];
-  passingScore: number; // Percentage
+  passingScore: number;
 }
 
 export interface ModuleProgress {
@@ -32,4 +32,14 @@ export interface ModuleProgress {
 
 export interface UserProgress {
   [moduleId: string]: ModuleProgress;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  role: 'admin' | 'worker';
+  password?: string; // Added password field
+  progress: UserProgress;
+  joinedDate: string;
+  certificateId?: string;
 }

@@ -26,7 +26,7 @@ const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, pro
         <div className="mt-12 mb-8">
             <div className="flex items-center justify-center gap-2 mb-2">
                 <div className="w-6 h-6 bg-primary"></div>
-                <span className="font-extrabold tracking-tighter text-2xl">CLEAN<span className="text-primary">SYSTEM</span></span>
+                <span className="font-extrabold tracking-tighter text-2xl">VIVO<span className="text-primary">CLEAN</span></span>
             </div>
             <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Profesjonalny System Szkoleniowy</p>
         </div>
@@ -72,11 +72,11 @@ const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, pro
             </div>
             
             <div className="text-center">
-                {/* Fake Signature */}
-                <div className="h-8 font-serif italic text-2xl text-primary mb-0">Adam Nowak</div>
+                {/* Signature */}
+                <div className="h-8 font-serif italic text-2xl text-primary mb-0">Maksym Reshetnyk</div>
                 <div className="border-t border-gray-800 w-64 pt-2 text-xs font-bold uppercase tracking-widest">
                     Główny Instruktor BHP<br/>
-                    CleanSystem Poland
+                    VivoClean Poland
                 </div>
             </div>
         </div>

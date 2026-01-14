@@ -3,50 +3,152 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import Quiz from './components/Quiz';
 import Certificate from './components/Certificate';
+import LoginScreen from './components/LoginScreen';
+import AdminPanel from './components/AdminPanel';
 import { MODULES } from './data';
-import { UserProgress } from './types';
+import { User, UserProgress } from './types';
 import { ChevronRight, Home, BookOpen, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
 const App: React.FC = () => {
-  // --- STATE ---
+  // --- USER STATE ---
+  const [users, setUsers] = useState<User[]>(() => {
+    const saved = localStorage.getItem('vivoCleanUsers');
+    if (saved) return JSON.parse(saved);
+    
+    // Default Data if empty
+    const defaultProgress: UserProgress = {};
+    MODULES.forEach(m => {
+      defaultProgress[m.id] = { completedLessons: [], quizScore: null, passed: false };
+    });
+
+    return [
+      {
+        id: 'admin-001',
+        name: 'Maksym Reshetnyk',
+        role: 'admin',
+        progress: defaultProgress,
+        joinedDate: new Date().toISOString()
+      },
+      {
+        id: 'worker-001',
+        name: 'Jan Kowalski',
+        role: 'worker',
+        password: '1234',
+        progress: defaultProgress,
+        joinedDate: new Date().toISOString(),
+        certificateId: 'VIVO-2026-001'
+      }
+    ];
+  });
+
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  
+  // --- APP STATE ---
   const [currentView, setCurrentView] = useState<'dashboard' | 'module'>('dashboard');
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [activeLessonIndex, setActiveLessonIndex] = useState(0);
   const [isQuizMode, setIsQuizMode] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  const [certificateId] = useState(() => Math.random().toString(36).substr(2, 9).toUpperCase() + '-2026');
   
-  // Ref for main content to scroll
+  // Which user data to render in the certificate component
+  const [certificateTarget, setCertificateTarget] = useState<User | null>(null);
+  
   const mainContentRef = useRef<HTMLDivElement>(null);
-
-  // Initialize progress from localStorage or default
-  const [progress, setProgress] = useState<UserProgress>(() => {
-    const saved = localStorage.getItem('cleanProProgress');
-    if (saved) return JSON.parse(saved);
-    
-    // Default empty progress
-    const initial: UserProgress = {};
-    MODULES.forEach(m => {
-      initial[m.id] = { completedLessons: [], quizScore: null, passed: false };
-    });
-    return initial;
-  });
 
   // --- EFFECTS ---
   useEffect(() => {
-    localStorage.setItem('cleanProProgress', JSON.stringify(progress));
-  }, [progress]);
+    localStorage.setItem('vivoCleanUsers', JSON.stringify(users));
+  }, [users]);
 
-  // Scroll to top when lesson changes
+  // If currentUser is a worker, keep their data in sync if users array updates
+  useEffect(() => {
+    if (currentUser) {
+      const updatedUser = users.find(u => u.id === currentUser.id);
+      if (updatedUser && JSON.stringify(updatedUser) !== JSON.stringify(currentUser)) {
+        setCurrentUser(updatedUser);
+      }
+    }
+  }, [users]);
+
   useEffect(() => {
     if (mainContentRef.current) {
         mainContentRef.current.scrollTop = 0;
     }
   }, [activeLessonIndex, currentView, isQuizMode]);
 
-  // --- HANDLERS ---
+  // --- ACTIONS ---
+
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    setCurrentView('dashboard');
+    setActiveModuleId(null);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCurrentView('dashboard');
+    setActiveModuleId(null);
+  };
+
+  const handleRegisterUser = (name: string) => {
+    const defaultProgress: UserProgress = {};
+    MODULES.forEach(m => {
+      defaultProgress[m.id] = { completedLessons: [], quizScore: null, passed: false };
+    });
+
+    // Generate a 4-digit PIN
+    const generatedPassword = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const newUser: User = {
+      id: `worker-${Date.now()}`,
+      name: name,
+      role: 'worker',
+      password: generatedPassword,
+      progress: defaultProgress,
+      joinedDate: new Date().toISOString(),
+      certificateId: `VIVO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`
+    };
+
+    setUsers(prev => [...prev, newUser]);
+  };
+
+  const handleDeleteUser = (id: string) => {
+    if (window.confirm('Czy na pewno chcesz usunąć tego pracownika? Ta operacja jest nieodwracalna.')) {
+      setUsers(prev => prev.filter(u => u.id !== id));
+    }
+  };
+
+  const handleProgressUpdate = (moduleId: string, lessonIndex: number | null, quizScore: number | null, passed: boolean) => {
+    if (!currentUser) return;
+
+    setUsers(prevUsers => {
+      return prevUsers.map(user => {
+        if (user.id === currentUser.id) {
+          const currentModuleProgress = user.progress[moduleId];
+          
+          let newCompletedLessons = currentModuleProgress.completedLessons;
+          if (lessonIndex !== null && !newCompletedLessons.includes(lessonIndex)) {
+            newCompletedLessons = [...newCompletedLessons, lessonIndex];
+          }
+
+          return {
+            ...user,
+            progress: {
+              ...user.progress,
+              [moduleId]: {
+                completedLessons: newCompletedLessons,
+                quizScore: quizScore !== null ? quizScore : currentModuleProgress.quizScore,
+                passed: passed || currentModuleProgress.passed
+              }
+            }
+          };
+        }
+        return user;
+      });
+    });
+  };
 
   const handleSelectModule = (id: string) => {
     setActiveModuleId(id);
@@ -56,21 +158,8 @@ const App: React.FC = () => {
   };
 
   const handleLessonComplete = (moduleId: string, lessonIndex: number) => {
-    setProgress(prev => {
-      const current = prev[moduleId];
-      if (!current.completedLessons.includes(lessonIndex)) {
-        return {
-          ...prev,
-          [moduleId]: {
-            ...current,
-            completedLessons: [...current.completedLessons, lessonIndex]
-          }
-        };
-      }
-      return prev;
-    });
+    handleProgressUpdate(moduleId, lessonIndex, null, false);
 
-    // Determine if we should go to next lesson or quiz
     const activeModule = MODULES.find(m => m.id === moduleId);
     if (activeModule) {
       if (lessonIndex < activeModule.lessons.length - 1) {
@@ -83,14 +172,7 @@ const App: React.FC = () => {
 
   const handleQuizComplete = (score: number, passed: boolean) => {
     if (activeModuleId) {
-      setProgress(prev => ({
-        ...prev,
-        [activeModuleId]: {
-          ...prev[activeModuleId],
-          quizScore: score,
-          passed: passed
-        }
-      }));
+      handleProgressUpdate(activeModuleId, null, score, passed);
       
       if (passed) {
         setTimeout(() => {
@@ -101,72 +183,107 @@ const App: React.FC = () => {
     }
   };
 
-  const handleDownloadCertificate = async () => {
-    const element = document.getElementById('certificate-print-area');
-    if (!element) return;
+  const handleDownloadCertificate = async (targetUser: User) => {
+    setCertificateTarget(targetUser);
+    // Slight delay to allow React to render the hidden certificate with new data
+    setTimeout(async () => {
+      const element = document.getElementById('certificate-print-area');
+      if (!element) return;
 
-    try {
-      setIsGeneratingPdf(true);
-      
-      // Temporarily make it visible/opaque for capture without showing in viewport logic
-      const parent = element.parentElement;
-      if (parent) {
-          parent.style.opacity = '1';
-          parent.style.zIndex = '9999';
-          parent.style.background = '#fff'; // Ensure white background behind it
+      try {
+        setIsGeneratingPdf(true);
+        const parent = element.parentElement;
+        if (parent) {
+            parent.style.opacity = '1';
+            parent.style.zIndex = '9999';
+            parent.style.background = '#fff';
+        }
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff'
+        });
+
+        if (parent) {
+            parent.style.opacity = '0';
+            parent.style.zIndex = '-1';
+        }
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Certyfikat_VivoClean_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
+
+      } catch (error) {
+        console.error('Failed to generate PDF', error);
+        alert('Błąd generowania certyfikatu.');
+      } finally {
+        setIsGeneratingPdf(false);
+        setCertificateTarget(null);
       }
-
-      const canvas = await html2canvas(element, {
-        scale: 2, // Higher resolution
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      });
-
-      // Revert styles
-      if (parent) {
-          parent.style.opacity = '0';
-          parent.style.zIndex = '-1';
-      }
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Certyfikat_CzystoscPro_${certificateId}.pdf`);
-
-    } catch (error) {
-      console.error('Failed to generate PDF', error);
-      alert('Błąd generowania certyfikatu. Spróbuj ponownie.');
-    } finally {
-      setIsGeneratingPdf(false);
-    }
+    }, 100);
   };
 
-  // --- RENDER HELPERS ---
+
+  // --- VIEW RENDER ---
+
+  if (!currentUser) {
+    return <LoginScreen users={users} onLogin={handleLogin} />;
+  }
+
+  if (currentUser.role === 'admin') {
+    return (
+      <>
+        {/* Hidden Certificate for Admin Generator */}
+        {certificateTarget && (
+          <Certificate 
+            userName={certificateTarget.name}
+            completionDate={new Date().toLocaleDateString('pl-PL')}
+            progress={certificateTarget.progress}
+            certificateId={certificateTarget.certificateId || 'PENDING'}
+          />
+        )}
+        
+        {isGeneratingPdf && (
+          <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
+              <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+              <h2 className="text-xl font-bold">Generowanie Certyfikatu...</h2>
+          </div>
+        )}
+
+        <AdminPanel 
+          users={users} 
+          onRegisterUser={handleRegisterUser} 
+          onDeleteUser={handleDeleteUser}
+          onLogout={handleLogout}
+          onGenerateCertificate={handleDownloadCertificate}
+        />
+      </>
+    );
+  }
+
+  // --- WORKER VIEW ---
   const activeModule = MODULES.find(m => m.id === activeModuleId);
 
   return (
     <div className="flex min-h-screen bg-background text-white font-sans selection:bg-primary selection:text-white">
-      {/* 
-         The Certificate component is always mounted but hidden (opacity-0, pointer-events-none).
-         This allows html2canvas to find it in the DOM and render it.
-      */}
+      {/* Certificate for Worker Self-Download */}
       <Certificate 
-        userName="Jan Kowalski" // In a real app, this would be dynamic
+        userName={currentUser.name}
         completionDate={new Date().toLocaleDateString('pl-PL')}
-        progress={progress}
-        certificateId={certificateId}
+        progress={currentUser.progress}
+        certificateId={currentUser.certificateId || 'PENDING'}
       />
 
-      {/* Loading Overlay for PDF Generation */}
       {isGeneratingPdf && (
         <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
             <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
             <h2 className="text-xl font-bold">Generowanie Certyfikatu...</h2>
-            <p className="text-gray-400">Proszę czekać, przygotowujemy plik PDF.</p>
         </div>
       )}
 
@@ -175,44 +292,46 @@ const App: React.FC = () => {
          <Sidebar 
             currentModuleId={activeModuleId} 
             onSelectModule={handleSelectModule} 
-            progress={progress}
+            progress={currentUser.progress}
             onShowDashboard={() => {
                 setCurrentView('dashboard');
                 setActiveModuleId(null);
             }}
+            userName={currentUser.name}
+            onLogout={handleLogout}
          />
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <main ref={mainContentRef} className="flex-1 h-screen overflow-y-auto print:hidden scroll-smooth">
         
         {/* Mobile Header */}
         <div className="md:hidden p-4 border-b border-border flex justify-between items-center bg-surface sticky top-0 z-10">
-            <span className="font-extrabold tracking-tighter">CLEAN<span className="text-primary">SYSTEM</span></span>
-            <button 
-                onClick={() => {
-                    if(currentView === 'module') {
-                        setCurrentView('dashboard');
-                        setActiveModuleId(null);
-                    }
-                }}
-                className="text-xs font-bold text-gray-400"
-            >
-                {currentView === 'module' ? 'WRÓĆ' : 'MENU'}
-            </button>
+            <span className="font-extrabold tracking-tighter">VIVO<span className="text-primary">CLEAN</span></span>
+            <div className="flex items-center gap-4">
+              <button 
+                  onClick={() => {
+                      if(currentView === 'module') {
+                          setCurrentView('dashboard');
+                          setActiveModuleId(null);
+                      }
+                  }}
+                  className="text-xs font-bold text-gray-400"
+              >
+                  {currentView === 'module' ? 'WRÓĆ' : 'MENU'}
+              </button>
+            </div>
         </div>
 
-        {/* View Switcher */}
         {currentView === 'dashboard' ? (
           <Dashboard 
-            progress={progress} 
+            progress={currentUser.progress} 
             onSelectModule={handleSelectModule} 
-            onPrintCertificate={handleDownloadCertificate}
+            onPrintCertificate={() => handleDownloadCertificate(currentUser)}
           />
         ) : (
           activeModule && (
             <div className="p-6 md:p-12 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {/* Breadcrumbs */}
                 <div className="flex items-center gap-2 text-xs text-gray-500 mb-8 font-mono uppercase">
                     <button onClick={() => setCurrentView('dashboard')} className="hover:text-white flex items-center gap-1">
                         <Home size={12} /> Panel Główny
@@ -244,7 +363,6 @@ const App: React.FC = () => {
                                 POPRZEDNIA
                             </button>
 
-                            {/* Custom pagination dots */}
                             <div className="flex gap-2">
                                 {activeModule.lessons.map((_, idx) => (
                                     <div 
