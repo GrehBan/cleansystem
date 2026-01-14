@@ -40,7 +40,7 @@ const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, pro
         </div>
 
         <p className="text-md text-gray-700 leading-relaxed mb-8 max-w-2xl">
-            Ukończył(a) z wynikiem pozytywnym kompleksowy cykl szkoleń teoretycznych i praktycznych
+            Ukończył(a) z wynikiem pozytywnym kompleksowy cykl szkoleń teoretycznych 
             w zakresie profesjonalnego utrzymania czystości, zgodnie z wymogami prawnymi (Dz.U. 2024 poz. 1327)
             oraz standardami technologicznymi na rok 2026.
         </p>
