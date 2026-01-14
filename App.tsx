@@ -6,6 +6,7 @@ import Certificate from './components/Certificate';
 import LoginScreen from './components/LoginScreen';
 import AdminPanel from './components/AdminPanel';
 import Resources from './components/Resources';
+import SignatureModal from './components/SignatureModal';
 import { MODULES } from './data';
 import { User, UserProgress } from './types';
 import { ChevronRight, Home, BookOpen, Loader2, FileText } from 'lucide-react';
@@ -51,8 +52,11 @@ const App: React.FC = () => {
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [activeLessonIndex, setActiveLessonIndex] = useState(0);
   const [isQuizMode, setIsQuizMode] = useState(false);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   
+  // --- CERTIFICATE & SIGNATURE STATE ---
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+  const [certificateSignature, setCertificateSignature] = useState<string | null>(null);
   // Which user data to render in the certificate component
   const [certificateTarget, setCertificateTarget] = useState<User | null>(null);
   
@@ -189,9 +193,28 @@ const App: React.FC = () => {
     }
   };
 
-  const handleDownloadCertificate = async (targetUser: User) => {
+  // --- CERTIFICATE GENERATION WORKFLOW ---
+
+  // 1. User/Admin clicks download -> Opens Modal
+  const handleInitiateCertificate = (targetUser: User) => {
     setCertificateTarget(targetUser);
-    // Slight delay to allow React to render the hidden certificate with new data
+    setIsSignatureModalOpen(true);
+  };
+
+  // 2. User signs and confirms -> Triggers generation
+  const handleSignatureConfirm = (signatureDataUrl: string) => {
+    setCertificateSignature(signatureDataUrl);
+    setIsSignatureModalOpen(false);
+    
+    // Proceed to generate
+    if (certificateTarget) {
+        generatePdf(certificateTarget, signatureDataUrl);
+    }
+  };
+
+  // 3. Actual PDF Generation logic
+  const generatePdf = async (targetUser: User, signature: string) => {
+    // Slight delay to allow React to render the hidden certificate with signature data
     setTimeout(async () => {
       const element = document.getElementById('certificate-print-area');
       if (!element) return;
@@ -231,8 +254,9 @@ const App: React.FC = () => {
       } finally {
         setIsGeneratingPdf(false);
         setCertificateTarget(null);
+        setCertificateSignature(null);
       }
-    }, 100);
+    }, 200);
   };
 
 
@@ -245,6 +269,13 @@ const App: React.FC = () => {
   if (currentUser.role === 'admin') {
     return (
       <>
+        {/* Modal */}
+        <SignatureModal 
+            isOpen={isSignatureModalOpen} 
+            onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
+            onConfirm={handleSignatureConfirm}
+        />
+
         {/* Hidden Certificate for Admin Generator */}
         {certificateTarget && (
           <Certificate 
@@ -252,6 +283,7 @@ const App: React.FC = () => {
             completionDate={new Date().toLocaleDateString('pl-PL')}
             progress={certificateTarget.progress}
             certificateId={certificateTarget.certificateId || 'PENDING'}
+            signatureImage={certificateSignature}
           />
         )}
         
@@ -267,7 +299,7 @@ const App: React.FC = () => {
           onRegisterUser={handleRegisterUser} 
           onDeleteUser={handleDeleteUser}
           onLogout={handleLogout}
-          onGenerateCertificate={handleDownloadCertificate}
+          onGenerateCertificate={handleInitiateCertificate}
         />
       </>
     );
@@ -278,12 +310,20 @@ const App: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-background text-white font-sans selection:bg-primary selection:text-white">
+      {/* Modal */}
+      <SignatureModal 
+            isOpen={isSignatureModalOpen} 
+            onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
+            onConfirm={handleSignatureConfirm}
+      />
+
       {/* Certificate for Worker Self-Download */}
       <Certificate 
-        userName={currentUser.name}
+        userName={certificateTarget ? certificateTarget.name : currentUser.name}
         completionDate={new Date().toLocaleDateString('pl-PL')}
         progress={currentUser.progress}
         certificateId={currentUser.certificateId || 'PENDING'}
+        signatureImage={certificateSignature}
       />
 
       {isGeneratingPdf && (
@@ -335,7 +375,7 @@ const App: React.FC = () => {
           <Dashboard 
             progress={currentUser.progress} 
             onSelectModule={handleSelectModule} 
-            onPrintCertificate={() => handleDownloadCertificate(currentUser)}
+            onPrintCertificate={() => handleInitiateCertificate(currentUser)}
             onShowResources={handleShowResources}
           />
         ) : currentView === 'resources' ? (

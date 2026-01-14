@@ -7,9 +7,10 @@ interface CertificateProps {
   completionDate: string;
   progress: UserProgress;
   certificateId: string;
+  signatureImage?: string | null;
 }
 
-const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, progress, certificateId }) => {
+const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, progress, certificateId, signatureImage }) => {
   return (
     // We position this absolute and off-screen initially, but ensure it has A4 dimensions for the screenshot
     <div className="absolute top-0 left-0 w-full flex justify-center pointer-events-none opacity-0 overflow-hidden z-[-1]">
@@ -64,17 +65,34 @@ const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, pro
             })}
         </div>
 
-        {/* Footer / Signatures */}
-        <div className="flex justify-between w-full max-w-3xl mt-auto mb-16 px-8">
-            <div className="text-center">
-                <p className="font-bold text-lg mb-8">{completionDate}</p>
-                <div className="border-t border-gray-800 w-48 pt-2 text-xs font-bold uppercase tracking-widest">Data Wydania</div>
+        {/* Footer / Signatures - 3 Columns */}
+        <div className="flex justify-between items-end w-full max-w-3xl mt-auto mb-16 px-4">
+            {/* Date */}
+            <div className="text-center w-1/3">
+                <p className="font-bold text-lg mb-6">{completionDate}</p>
+                <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">Data Wydania</div>
             </div>
             
-            <div className="text-center">
-                {/* Signature */}
-                <div className="h-8 font-serif italic text-2xl text-primary mb-0">Maksym Reshetnyk</div>
-                <div className="border-t border-gray-800 w-64 pt-2 text-xs font-bold uppercase tracking-widest">
+            {/* Holder Signature (Dynamic) */}
+            <div className="text-center w-1/3 px-2">
+                <div className="h-16 flex items-end justify-center mb-2">
+                    {signatureImage ? (
+                         <img src={signatureImage} alt="Podpis" className="max-h-16 max-w-full object-contain" />
+                    ) : (
+                         <span className="text-gray-300 text-xs italic">Brak podpisu</span>
+                    )}
+                </div>
+                <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">
+                    Podpis Posiadacza
+                </div>
+            </div>
+
+            {/* Instructor Signature (Static) */}
+            <div className="text-center w-1/3">
+                <div className="h-16 flex items-end justify-center mb-0">
+                    <span className="font-serif italic text-2xl text-primary">Maksym Reshetnyk</span>
+                </div>
+                <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">
                     Główny Instruktor BHP<br/>
                     VivoClean Poland
                 </div>
