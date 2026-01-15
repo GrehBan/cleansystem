@@ -1,108 +1,118 @@
 import React from 'react';
 import { MODULES } from '../data';
-import { UserProgress } from '../types';
+import { User, CompanyConfig } from '../types';
 
 interface CertificateProps {
-  userName: string;
+  user: User;
   completionDate: string;
-  progress: UserProgress;
-  certificateId: string;
+  company: CompanyConfig;
   signatureImage?: string | null;
 }
 
-const Certificate: React.FC<CertificateProps> = ({ userName, completionDate, progress, certificateId, signatureImage }) => {
+const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company, signatureImage }) => {
   return (
     // We position this absolute and off-screen initially, but ensure it has A4 dimensions for the screenshot
     <div className="absolute top-0 left-0 w-full flex justify-center pointer-events-none opacity-0 overflow-hidden z-[-1]">
       <div 
         id="certificate-print-area" 
-        className="relative bg-white text-black text-center flex flex-col items-center p-16 box-border"
+        className="relative bg-white text-black flex flex-col p-16 box-border font-serif"
         style={{ width: '794px', height: '1123px' }} // Exact A4 dimensions at 96DPI
       >
-        {/* Decorative Border */}
-        <div className="absolute inset-4 border-[4px] border-double border-gray-800 pointer-events-none"></div>
-        <div className="absolute inset-6 border-[1px] border-gray-400 pointer-events-none"></div>
-
-        {/* Header */}
-        <div className="mt-12 mb-8">
-            <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="w-6 h-6 bg-primary"></div>
-                <span className="font-extrabold tracking-tighter text-2xl">VIVO<span className="text-primary">CLEAN</span></span>
+        {/* Header - Organizator */}
+        <div className="flex justify-between items-start mb-8 text-xs border-b border-gray-300 pb-4">
+            <div className="w-1/2">
+                <strong>Organizator szkolenia (Pracodawca):</strong><br/>
+                {company.companyName}<br/>
+                {company.address}<br/>
+                NIP: {company.nip}
             </div>
-            <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Profesjonalny System Szkoleniowy</p>
+            <div className="w-1/2 text-right">
+                <span className="text-gray-500">Miejsce, data:</span><br/>
+                {company.city}, {completionDate}
+            </div>
         </div>
 
-        <h1 className="text-5xl font-serif font-bold uppercase tracking-wider mb-2 text-gray-900">Certyfikat</h1>
-        <div className="text-xl uppercase tracking-[0.3em] text-primary font-bold mb-12">Kompetencji Zawodowych</div>
-
-        <div className="mb-8 w-full max-w-xl">
-            <p className="text-lg italic text-gray-600 mb-2 font-serif">Niniejszym zaświadcza się, że:</p>
-            <div className="text-4xl font-bold border-b-2 border-gray-300 pb-2 mb-2 font-serif text-gray-900">{userName}</div>
+        {/* Title */}
+        <div className="text-center mt-8 mb-12">
+            <h1 className="text-2xl font-bold uppercase tracking-widest mb-4">ZAŚWIADCZENIE</h1>
+            <h2 className="text-lg font-bold">o ukończeniu instruktażu stanowiskowego BHP oraz szkolenia kompetencyjnego</h2>
         </div>
 
-        <p className="text-md text-gray-700 leading-relaxed mb-8 max-w-2xl">
-            Ukończył(a) z wynikiem pozytywnym kompleksowy cykl szkoleń teoretycznych 
-            w zakresie profesjonalnego utrzymania czystości, zgodnie z wymogami prawnymi (Dz.U. 2024 poz. 1327)
-            oraz standardami technologicznymi na rok 2026.
-        </p>
+        {/* Content */}
+        <div className="mb-8 text-sm leading-8 text-justify">
+            <p>
+                Zaświadcza się, że Pan/Pani: <strong className="text-lg px-2">{user.name}</strong>
+            </p>
+            <p>
+                Urodzony/a: ......................................., PESEL: <strong>{user.pesel || '________________'}</strong>
+            </p>
+            <p className="mt-6">
+                ukończył(a) szkolenie w formie instruktażu stanowiskowego / samokształcenia kierowanego
+                w zakresie: <strong>Technologii utrzymania czystości, Bezpieczeństwa pracy z czynnikami chemicznymi oraz Ergonomii pracy.</strong>
+            </p>
+        </div>
 
-        {/* Modules Grid */}
-        <div className="w-full max-w-2xl mb-12">
-            <div className="bg-gray-100 px-4 py-2 flex justify-between text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
-                <span>Moduł Szkoleniowy</span>
-                <span>Wynik Egzaminu</span>
-            </div>
-            {MODULES.map(m => {
-                const score = progress[m.id]?.quizScore;
-                return (
-                    <div key={m.id} className="flex justify-between border-b border-gray-200 py-3 text-sm">
-                        <span className="font-bold text-gray-800 text-left">{m.title}</span>
-                        <span className="font-mono font-bold text-gray-900">
-                            {score ? `${score}%` : '---'}
-                        </span>
-                    </div>
-                );
-            })}
+        <div className="mb-4">
+            <strong className="block mb-2 border-b border-gray-800 w-full">Program szkolenia obejmował tematykę:</strong>
+            <ul className="list-disc pl-6 text-xs space-y-1">
+                {MODULES.map(m => (
+                    <li key={m.id}>
+                        {m.title} - <span className="font-bold">{user.progress[m.id]?.quizScore || 0}%</span> (Zaliczono)
+                    </li>
+                ))}
+            </ul>
+        </div>
+
+        <div className="mt-8 text-xs text-gray-600 mb-12">
+            <p>Celem szkolenia było uzyskanie przez pracownika wiedzy i umiejętności niezbędnych do wykonywania pracy zgodnie z przepisami oraz zasadami bezpieczeństwa i higieny pracy, zapoznanie z zagrożeniami występującymi na konkretnym stanowisku pracy oraz sposobami ochrony przed tymi zagrożeniami.</p>
         </div>
 
         {/* Footer / Signatures - 3 Columns */}
-        <div className="flex justify-between items-end w-full max-w-3xl mt-auto mb-16 px-4">
-            {/* Date */}
-            <div className="text-center w-1/3">
-                <p className="font-bold text-lg mb-6">{completionDate}</p>
-                <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">Data Wydania</div>
-            </div>
+        <div className="flex justify-between items-end w-full mt-auto mb-16 px-4 gap-8">
             
-            {/* Holder Signature (Dynamic) */}
-            <div className="text-center w-1/3 px-2">
-                <div className="h-16 flex items-end justify-center mb-2">
+            {/* Employee Signature */}
+            <div className="text-center w-1/3">
+                <div className="h-20 flex items-end justify-center mb-2">
                     {signatureImage ? (
-                         <img src={signatureImage} alt="Podpis" className="max-h-16 max-w-full object-contain" />
+                         <img src={signatureImage} alt="Podpis" className="max-h-20 max-w-full object-contain" />
                     ) : (
                          <span className="text-gray-300 text-xs italic">Brak podpisu</span>
                     )}
                 </div>
                 <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">
-                    Podpis Posiadacza
+                    Podpis szkolonego pracownika
                 </div>
             </div>
 
             {/* Instructor Signature (Static) */}
             <div className="text-center w-1/3">
-                <div className="h-16 flex items-end justify-center mb-0">
-                    <span className="font-serif italic text-2xl text-primary">Maksym Reshetnyk</span>
+                <div className="h-20 flex items-end justify-center mb-0 pb-2">
+                    <span className="font-script text-xl italic">{company.representative}</span>
                 </div>
                 <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">
-                    Główny Instruktor BHP<br/>
-                    VivoClean Poland
+                    Osoba prowadząca instruktaż<br/>
+                    (Przełożony / Instruktor)
+                </div>
+            </div>
+
+             {/* Stamp Space */}
+             <div className="text-center w-1/3">
+                <div className="h-20 flex items-center justify-center mb-2 border-2 border-dashed border-gray-200 rounded-full text-gray-200 font-bold rotate-12">
+                    PIECZĘĆ
+                </div>
+                <div className="border-t border-gray-800 pt-2 text-[10px] font-bold uppercase tracking-widest">
+                    Pieczęć Pracodawcy
                 </div>
             </div>
         </div>
 
         {/* Verification Code */}
-        <div className="absolute bottom-6 left-0 w-full text-center">
-             <p className="text-[10px] text-gray-400 font-mono">
-                ID CERTYFIKATU: <span className="text-gray-600 font-bold">{certificateId}</span> | DOKUMENT WYGENEROWANY ELEKTRONICZNIE
+        <div className="absolute bottom-6 left-16 right-16 text-center border-t border-gray-300 pt-2">
+             <p className="text-[9px] text-gray-500 font-mono">
+                Podstawa prawna: Rozporządzenie Ministra Gospodarki i Pracy z dnia 27 lipca 2004 r. w sprawie szkolenia w dziedzinie bezpieczeństwa i higieny pracy (Dz.U. Nr 180, poz. 1860, z późn. zm.).
+             </p>
+             <p className="text-[9px] text-gray-400 font-mono mt-1">
+                ID CERTYFIKATU: <span className="font-bold">{user.certificateId}</span>
              </p>
         </div>
       </div>

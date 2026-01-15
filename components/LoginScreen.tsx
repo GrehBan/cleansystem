@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { ShieldCheck, ArrowLeft, LogIn, Lock } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, LogIn, Lock, Info } from 'lucide-react';
 
 interface LoginScreenProps {
   users: User[];
   onLogin: (user: User) => void;
+  onRodoAccept: (user: User) => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin, onRodoAccept }) => {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [selectedWorkerId, setSelectedWorkerId] = useState<string | null>(null);
+  const [showRodo, setShowRodo] = useState(false);
+  const [pendingUser, setPendingUser] = useState<User | null>(null);
   
   const [passwordInput, setPasswordInput] = useState('');
   const [error, setError] = useState('');
 
   const workers = users.filter(u => u.role === 'worker');
   const admin = users.find(u => u.role === 'admin');
+
+  const initiateLogin = (user: User) => {
+    // If it's a worker and they haven't accepted RODO, show modal
+    if (user.role === 'worker' && !user.rodoAccepted) {
+        setPendingUser(user);
+        setShowRodo(true);
+    } else {
+        onLogin(user);
+    }
+  };
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,9 +46,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin }) => {
     if (!worker) return;
 
     if (worker.password && passwordInput === worker.password) {
-      onLogin(worker);
+      initiateLogin(worker);
     } else {
       setError('Nieprawidłowe hasło');
+    }
+  };
+
+  const confirmRodo = () => {
+    if (pendingUser) {
+        onRodoAccept(pendingUser);
+        onLogin(pendingUser); // Proceed to login
     }
   };
 
@@ -43,7 +63,42 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin }) => {
     setSelectedWorkerId(null);
     setPasswordInput('');
     setError('');
+    setShowRodo(false);
+    setPendingUser(null);
   };
+
+  if (showRodo) {
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-background p-4 z-50">
+            <div className="bg-card border border-primary/50 p-8 rounded-xl max-w-2xl w-full shadow-2xl">
+                <div className="flex items-center gap-3 mb-6 text-primary">
+                    <Info size={32} />
+                    <h2 className="text-2xl font-bold">Wymagana Akceptacja RODO</h2>
+                </div>
+                <div className="prose prose-invert text-sm text-gray-300 max-h-[400px] overflow-y-auto mb-6 pr-2">
+                    <p className="font-bold text-white mb-2">Klauzula Informacyjna dla Pracownika:</p>
+                    <p>
+                        Zgodnie z art. 13 ust. 1 i ust. 2 Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (RODO), informujemy, że:
+                    </p>
+                    <ol className="list-decimal pl-5 space-y-2">
+                        <li>Administratorem Pani/Pana danych osobowych jest Pracodawca (podmiot organizujący szkolenie).</li>
+                        <li>Pani/Pana dane osobowe (Imię, Nazwisko, PESEL, Wizerunek - podpis) przetwarzane będą w celu dokumentacji przebiegu szkolenia BHP oraz wystawienia zaświadczenia, na podstawie art. 6 ust. 1 lit. c RODO (wypełnienie obowiązku prawnego ciążącego na administratorze - Kodeks Pracy).</li>
+                        <li>Podanie danych jest wymogiem ustawowym. Niepodanie danych uniemożliwia realizację szkolenia i dopuszczenie do pracy.</li>
+                        <li>Dane będą przechowywane przez okres wymagany przepisami prawa pracy (akta osobowe).</li>
+                    </ol>
+                </div>
+                <div className="flex justify-end gap-4">
+                    <button onClick={resetSelection} className="text-gray-400 hover:text-white font-bold px-4 py-2">
+                        Anuluj
+                    </button>
+                    <button onClick={confirmRodo} className="bg-primary hover:bg-orange-600 text-white font-bold px-6 py-2 rounded">
+                        AKCEPTUJĘ I PRZECHODZĘ DALEJ
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background text-white p-4">

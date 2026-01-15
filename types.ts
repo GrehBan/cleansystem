@@ -34,6 +34,15 @@ export interface UserProgress {
   [moduleId: string]: ModuleProgress;
 }
 
+// Konfiguracja Podmiotu Prawnego (Pracodawcy)
+export interface CompanyConfig {
+  companyName: string;
+  nip: string;
+  address: string;
+  representative: string; // Osoba reprezentująca (np. Prezes, Kierownik BHP)
+  city: string; // Miejscowość wystawienia dokumentów
+}
+
 export interface User {
   id: string;
   name: string;
@@ -42,6 +51,40 @@ export interface User {
   progress: UserProgress;
   joinedDate: string;
   certificateId?: string;
+  // Dane Osobowe (RODO/Kadrowe)
+  pesel?: string;
+  idNumber?: string; // Numer Dowodu / Karty Pobytu
+  address?: string;
+  phoneNumber?: string;
+  email?: string;
+  // Zgody Prawne
+  rodoAccepted?: boolean;
+  rodoAcceptedDate?: string;
+}
+
+// Struktura Logu Prawnego (Dowód odbycia szkolenia)
+export interface TrainingLog {
+  id: string;
+  userId: string;
+  userName: string;
+  userPesel: string; // Kluczowy identyfikator prawny
+  moduleId: string;
+  moduleTitle: string;
+  score: number;
+  timestamp: string;
+  legalStatementAccepted: boolean;
+  signatureData?: string | null; // Obraz podpisu (Base64)
+  // Snapshot danych w momencie zdawania
+  userSnapshot: {
+    address: string;
+    idNumber: string;
+  };
+  // Metadane techniczne dowodowe
+  legalMeta: {
+    userAgent: string;
+    ipPlaceholder: string; // W realnej app to prawdziwe IP
+    employerNameSnapshot: string; // U kogo pracował w momencie szkolenia
+  };
 }
 
 export interface SDSConfig {

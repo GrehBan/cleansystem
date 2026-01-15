@@ -8,18 +8,29 @@ import AdminPanel from './components/AdminPanel';
 import Resources from './components/Resources';
 import SignatureModal from './components/SignatureModal';
 import { MODULES } from './data';
-import { User, UserProgress } from './types';
-import { ChevronRight, Home, BookOpen, Loader2, FileText } from 'lucide-react';
+import { User, UserProgress, TrainingLog, CompanyConfig } from './types';
+import { ChevronRight, Home, BookOpen, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
 const App: React.FC = () => {
+  // --- COMPANY STATE (Legal Entity) ---
+  const [companyConfig, setCompanyConfig] = useState<CompanyConfig>(() => {
+    const saved = localStorage.getItem('vivoCleanCompany');
+    return saved ? JSON.parse(saved) : {
+        companyName: 'VIVO CLEAN POLAND SP. Z O.O.',
+        nip: '525-000-00-00',
+        address: 'ul. Przemysłowa 1, 00-001 Warszawa',
+        representative: 'Maksym Reshetnyk',
+        city: 'Warszawa'
+    };
+  });
+
   // --- USER STATE ---
   const [users, setUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('vivoCleanUsers');
     if (saved) return JSON.parse(saved);
     
-    // Default Data if empty
     const defaultProgress: UserProgress = {};
     MODULES.forEach(m => {
       defaultProgress[m.id] = { completedLessons: [], quizScore: null, passed: false };
@@ -31,7 +42,9 @@ const App: React.FC = () => {
         name: 'Maksym Reshetnyk',
         role: 'admin',
         progress: defaultProgress,
-        joinedDate: new Date().toISOString()
+        joinedDate: new Date().toISOString(),
+        rodoAccepted: true,
+        rodoAcceptedDate: new Date().toISOString()
       },
       {
         id: 'worker-001',
@@ -40,24 +53,32 @@ const App: React.FC = () => {
         password: '1234',
         progress: defaultProgress,
         joinedDate: new Date().toISOString(),
-        certificateId: 'VIVO-2026-001'
+        certificateId: 'VIVO-2026-001',
+        pesel: '85010112345',
+        idNumber: 'ABC 123456',
+        address: 'ul. Przykładowa 1, 00-001 Warszawa',
+        phoneNumber: '500 600 700',
+        rodoAccepted: true,
+        rodoAcceptedDate: new Date().toISOString()
       }
     ];
   });
 
+  // --- LEGAL LOGS STATE ---
+  const [trainingLogs, setTrainingLogs] = useState<TrainingLog[]>(() => {
+    const saved = localStorage.getItem('vivoCleanLogs');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  
-  // --- APP STATE ---
   const [currentView, setCurrentView] = useState<'dashboard' | 'module' | 'resources'>('dashboard');
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [activeLessonIndex, setActiveLessonIndex] = useState(0);
   const [isQuizMode, setIsQuizMode] = useState(false);
   
-  // --- CERTIFICATE & SIGNATURE STATE ---
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
   const [certificateSignature, setCertificateSignature] = useState<string | null>(null);
-  // Which user data to render in the certificate component
   const [certificateTarget, setCertificateTarget] = useState<User | null>(null);
   
   const mainContentRef = useRef<HTMLDivElement>(null);
@@ -67,7 +88,14 @@ const App: React.FC = () => {
     localStorage.setItem('vivoCleanUsers', JSON.stringify(users));
   }, [users]);
 
-  // If currentUser is a worker, keep their data in sync if users array updates
+  useEffect(() => {
+    localStorage.setItem('vivoCleanLogs', JSON.stringify(trainingLogs));
+  }, [trainingLogs]);
+
+  useEffect(() => {
+    localStorage.setItem('vivoCleanCompany', JSON.stringify(companyConfig));
+  }, [companyConfig]);
+
   useEffect(() => {
     if (currentUser) {
       const updatedUser = users.find(u => u.id === currentUser.id);
@@ -97,23 +125,29 @@ const App: React.FC = () => {
     setActiveModuleId(null);
   };
 
-  const handleRegisterUser = (name: string) => {
+  const handleRegisterUser = (userData: Partial<User>) => {
     const defaultProgress: UserProgress = {};
     MODULES.forEach(m => {
       defaultProgress[m.id] = { completedLessons: [], quizScore: null, passed: false };
     });
 
-    // Generate a 4-digit PIN
     const generatedPassword = Math.floor(1000 + Math.random() * 9000).toString();
 
     const newUser: User = {
       id: `worker-${Date.now()}`,
-      name: name,
+      name: userData.name || 'Nieznany',
       role: 'worker',
       password: generatedPassword,
       progress: defaultProgress,
       joinedDate: new Date().toISOString(),
-      certificateId: `VIVO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`
+      certificateId: `VIVO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+      pesel: userData.pesel || '',
+      idNumber: userData.idNumber || '',
+      address: userData.address || '',
+      phoneNumber: userData.phoneNumber || '',
+      email: userData.email || '',
+      rodoAccepted: true, // Registration by admin implies paper consent or immediate electronic acceptance
+      rodoAcceptedDate: new Date().toISOString()
     };
 
     setUsers(prev => [...prev, newUser]);
@@ -125,34 +159,14 @@ const App: React.FC = () => {
     }
   };
 
-  const handleProgressUpdate = (moduleId: string, lessonIndex: number | null, quizScore: number | null, passed: boolean) => {
-    if (!currentUser) return;
+  const handleUpdateCompany = (config: CompanyConfig) => {
+    setCompanyConfig(config);
+  };
 
-    setUsers(prevUsers => {
-      return prevUsers.map(user => {
-        if (user.id === currentUser.id) {
-          const currentModuleProgress = user.progress[moduleId];
-          
-          let newCompletedLessons = currentModuleProgress.completedLessons;
-          if (lessonIndex !== null && !newCompletedLessons.includes(lessonIndex)) {
-            newCompletedLessons = [...newCompletedLessons, lessonIndex];
-          }
-
-          return {
-            ...user,
-            progress: {
-              ...user.progress,
-              [moduleId]: {
-                completedLessons: newCompletedLessons,
-                quizScore: quizScore !== null ? quizScore : currentModuleProgress.quizScore,
-                passed: passed || currentModuleProgress.passed
-              }
-            }
-          };
-        }
-        return user;
-      });
-    });
+  const handleRodoAccept = (user: User) => {
+    const updatedUser = { ...user, rodoAccepted: true, rodoAcceptedDate: new Date().toISOString() };
+    setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
+    setCurrentUser(updatedUser);
   };
 
   const handleSelectModule = (id: string) => {
@@ -168,8 +182,7 @@ const App: React.FC = () => {
   };
 
   const handleLessonComplete = (moduleId: string, lessonIndex: number) => {
-    handleProgressUpdate(moduleId, lessonIndex, null, false);
-
+    // Progress is local until quiz is passed legally
     const activeModule = MODULES.find(m => m.id === moduleId);
     if (activeModule) {
       if (lessonIndex < activeModule.lessons.length - 1) {
@@ -180,45 +193,84 @@ const App: React.FC = () => {
     }
   };
 
-  const handleQuizComplete = (score: number, passed: boolean) => {
-    if (activeModuleId) {
-      handleProgressUpdate(activeModuleId, null, score, passed);
-      
-      if (passed) {
+  // --- LEGAL QUIZ COMPLETION ---
+  const handleQuizComplete = (score: number, passed: boolean, signatureData?: string) => {
+    if (!currentUser || !activeModuleId) return;
+
+    // 1. Update User Progress
+    setUsers(prevUsers => {
+      return prevUsers.map(user => {
+        if (user.id === currentUser.id) {
+          const currentModuleProgress = user.progress[activeModuleId];
+          return {
+            ...user,
+            progress: {
+              ...user.progress,
+              [activeModuleId]: {
+                ...currentModuleProgress,
+                quizScore: score,
+                passed: passed || currentModuleProgress.passed
+              }
+            }
+          };
+        }
+        return user;
+      });
+    });
+
+    // 2. CREATE IMMUTABLE LEGAL LOG (AUDIT TRAIL)
+    if (passed) {
+        const moduleTitle = MODULES.find(m => m.id === activeModuleId)?.title || activeModuleId;
+        
+        const newLog: TrainingLog = {
+            id: `log-${Date.now()}`,
+            userId: currentUser.id,
+            userName: currentUser.name,
+            userPesel: currentUser.pesel || 'BRAK DANYCH',
+            moduleId: activeModuleId,
+            moduleTitle: moduleTitle,
+            score: score,
+            timestamp: new Date().toISOString(),
+            legalStatementAccepted: true,
+            signatureData: signatureData || null, // STORE THE SIGNATURE
+            userSnapshot: {
+                address: currentUser.address || '',
+                idNumber: currentUser.idNumber || ''
+            },
+            legalMeta: {
+                userAgent: navigator.userAgent,
+                ipPlaceholder: '192.168.x.x (Intranet)', // In real app, server-side IP
+                employerNameSnapshot: companyConfig.companyName
+            }
+        };
+
+        setTrainingLogs(prev => [newLog, ...prev]);
+        
         setTimeout(() => {
             setCurrentView('dashboard');
             setActiveModuleId(null);
-        }, 1500);
-      }
+        }, 1000);
     }
   };
 
-  // --- CERTIFICATE GENERATION WORKFLOW ---
-
-  // 1. User/Admin clicks download -> Opens Modal
+  // --- PDF GENERATION ---
   const handleInitiateCertificate = (targetUser: User) => {
     setCertificateTarget(targetUser);
     setIsSignatureModalOpen(true);
   };
 
-  // 2. User signs and confirms -> Triggers generation
   const handleSignatureConfirm = (signatureDataUrl: string) => {
     setCertificateSignature(signatureDataUrl);
     setIsSignatureModalOpen(false);
-    
-    // Proceed to generate
     if (certificateTarget) {
         generatePdf(certificateTarget, signatureDataUrl);
     }
   };
 
-  // 3. Actual PDF Generation logic
   const generatePdf = async (targetUser: User, signature: string) => {
-    // Slight delay to allow React to render the hidden certificate with signature data
     setTimeout(async () => {
       const element = document.getElementById('certificate-print-area');
       if (!element) return;
-
       try {
         setIsGeneratingPdf(true);
         const parent = element.parentElement;
@@ -227,30 +279,20 @@ const App: React.FC = () => {
             parent.style.zIndex = '9999';
             parent.style.background = '#fff';
         }
-
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: '#ffffff'
-        });
-
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
         if (parent) {
             parent.style.opacity = '0';
             parent.style.zIndex = '-1';
         }
-
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Certyfikat_VivoClean_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
-
+        pdf.save(`Zaswiadczenie_BHP_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
       } catch (error) {
-        console.error('Failed to generate PDF', error);
-        alert('Błąd generowania certyfikatu.');
+        console.error('PDF Generation Error:', error);
+        alert('Wystąpił błąd podczas generowania pliku PDF. Sprawdź konsolę lub spróbuj ponownie.');
       } finally {
         setIsGeneratingPdf(false);
         setCertificateTarget(null);
@@ -259,45 +301,41 @@ const App: React.FC = () => {
     }, 200);
   };
 
-
-  // --- VIEW RENDER ---
-
   if (!currentUser) {
-    return <LoginScreen users={users} onLogin={handleLogin} />;
+    return <LoginScreen users={users} onLogin={handleLogin} onRodoAccept={handleRodoAccept} />;
   }
 
+  // --- ADMIN VIEW ---
   if (currentUser.role === 'admin') {
     return (
       <>
-        {/* Modal */}
         <SignatureModal 
             isOpen={isSignatureModalOpen} 
             onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
             onConfirm={handleSignatureConfirm}
         />
-
-        {/* Hidden Certificate for Admin Generator */}
         {certificateTarget && (
           <Certificate 
-            userName={certificateTarget.name}
+            user={certificateTarget}
             completionDate={new Date().toLocaleDateString('pl-PL')}
-            progress={certificateTarget.progress}
-            certificateId={certificateTarget.certificateId || 'PENDING'}
+            company={companyConfig}
             signatureImage={certificateSignature}
           />
         )}
-        
         {isGeneratingPdf && (
           <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
               <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-              <h2 className="text-xl font-bold">Generowanie Certyfikatu...</h2>
+              <h2 className="text-xl font-bold">Generowanie Dokumentu Prawnego...</h2>
           </div>
         )}
 
         <AdminPanel 
           users={users} 
+          logs={trainingLogs}
+          companyConfig={companyConfig}
           onRegisterUser={handleRegisterUser} 
           onDeleteUser={handleDeleteUser}
+          onUpdateCompany={handleUpdateCompany}
           onLogout={handleLogout}
           onGenerateCertificate={handleInitiateCertificate}
         />
@@ -310,30 +348,27 @@ const App: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-background text-white font-sans selection:bg-primary selection:text-white">
-      {/* Modal */}
+      {/* 
+        Certificate Component for Screenshot Generation 
+      */}
       <SignatureModal 
             isOpen={isSignatureModalOpen} 
             onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
             onConfirm={handleSignatureConfirm}
       />
-
-      {/* Certificate for Worker Self-Download */}
       <Certificate 
-        userName={certificateTarget ? certificateTarget.name : currentUser.name}
+        user={certificateTarget || currentUser}
         completionDate={new Date().toLocaleDateString('pl-PL')}
-        progress={currentUser.progress}
-        certificateId={currentUser.certificateId || 'PENDING'}
+        company={companyConfig}
         signatureImage={certificateSignature}
       />
-
       {isGeneratingPdf && (
         <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
             <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-            <h2 className="text-xl font-bold">Generowanie Certyfikatu...</h2>
+            <h2 className="text-xl font-bold">Generowanie Zaświadczenia...</h2>
         </div>
       )}
 
-      {/* Sidebar */}
       <div className="hidden md:block print:hidden">
          <Sidebar 
             currentModuleId={activeModuleId} 
@@ -341,31 +376,17 @@ const App: React.FC = () => {
             onSelectModule={handleSelectModule} 
             onShowResources={handleShowResources}
             progress={currentUser.progress}
-            onShowDashboard={() => {
-                setCurrentView('dashboard');
-                setActiveModuleId(null);
-            }}
+            onShowDashboard={() => { setCurrentView('dashboard'); setActiveModuleId(null); }}
             userName={currentUser.name}
             onLogout={handleLogout}
          />
       </div>
 
-      {/* Main Content */}
       <main ref={mainContentRef} className="flex-1 h-screen overflow-y-auto print:hidden scroll-smooth">
-        
-        {/* Mobile Header */}
         <div className="md:hidden p-4 border-b border-border flex justify-between items-center bg-surface sticky top-0 z-10">
             <span className="font-extrabold tracking-tighter">VIVO<span className="text-primary">CLEAN</span></span>
             <div className="flex items-center gap-4">
-              <button 
-                  onClick={() => {
-                      if(currentView !== 'dashboard') {
-                          setCurrentView('dashboard');
-                          setActiveModuleId(null);
-                      }
-                  }}
-                  className="text-xs font-bold text-gray-400"
-              >
+              <button onClick={() => { if(currentView !== 'dashboard') { setCurrentView('dashboard'); setActiveModuleId(null); } }} className="text-xs font-bold text-gray-400">
                   {currentView !== 'dashboard' ? 'WRÓĆ' : 'MENU'}
               </button>
             </div>
@@ -400,11 +421,9 @@ const App: React.FC = () => {
                             </div>
                             <BookOpen size={32} className="text-gray-600" />
                         </div>
-
                         <div className="prose prose-invert prose-lg max-w-none mb-12">
                             {activeModule.lessons[activeLessonIndex].content}
                         </div>
-
                         <div className="flex justify-between items-center pt-8 border-t border-border">
                             <button
                                 onClick={() => setActiveLessonIndex(prev => Math.max(0, prev - 1))}
@@ -413,17 +432,12 @@ const App: React.FC = () => {
                             >
                                 POPRZEDNIA
                             </button>
-
                             <div className="flex gap-2">
                                 {activeModule.lessons.map((_, idx) => (
-                                    <div 
-                                        key={idx}
-                                        className={`w-2 h-2 rounded-full ${idx === activeLessonIndex ? 'bg-primary' : 'bg-gray-700'}`}
-                                    />
+                                    <div key={idx} className={`w-2 h-2 rounded-full ${idx === activeLessonIndex ? 'bg-primary' : 'bg-gray-700'}`} />
                                 ))}
                                 <div className={`w-2 h-2 rounded-full ${isQuizMode ? 'bg-primary' : 'border border-gray-700'}`} />
                             </div>
-
                             <button
                                 onClick={() => handleLessonComplete(activeModule.id, activeLessonIndex)}
                                 className="px-6 py-2 rounded bg-white text-black font-bold hover:bg-gray-200 transition-colors text-sm"
