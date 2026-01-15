@@ -57,6 +57,7 @@ export interface User {
   address?: string;
   phoneNumber?: string;
   email?: string;
+  jobTitle?: string; // Stanowisko pracy - KLUCZOWE DLA INSTRUKTAŻU STANOWISKOWEGO
   // Zgody Prawne
   rodoAccepted?: boolean;
   rodoAcceptedDate?: string;
@@ -78,6 +79,7 @@ export interface TrainingLog {
   userSnapshot: {
     address: string;
     idNumber: string;
+    jobTitle: string;
   };
   // Metadane techniczne dowodowe
   legalMeta: {

@@ -58,6 +58,7 @@ const App: React.FC = () => {
         idNumber: 'ABC 123456',
         address: 'ul. Przykładowa 1, 00-001 Warszawa',
         phoneNumber: '500 600 700',
+        jobTitle: 'Pracownik Serwisu Porządkowego',
         rodoAccepted: true,
         rodoAcceptedDate: new Date().toISOString()
       }
@@ -146,6 +147,7 @@ const App: React.FC = () => {
       address: userData.address || '',
       phoneNumber: userData.phoneNumber || '',
       email: userData.email || '',
+      jobTitle: userData.jobTitle || 'Pracownik Serwisu Porządkowego',
       rodoAccepted: true, // Registration by admin implies paper consent or immediate electronic acceptance
       rodoAcceptedDate: new Date().toISOString()
     };
@@ -235,7 +237,8 @@ const App: React.FC = () => {
             signatureData: signatureData || null, // STORE THE SIGNATURE
             userSnapshot: {
                 address: currentUser.address || '',
-                idNumber: currentUser.idNumber || ''
+                idNumber: currentUser.idNumber || '',
+                jobTitle: currentUser.jobTitle || 'Pracownik'
             },
             legalMeta: {
                 userAgent: navigator.userAgent,
@@ -262,43 +265,52 @@ const App: React.FC = () => {
   const handleSignatureConfirm = (signatureDataUrl: string) => {
     setCertificateSignature(signatureDataUrl);
     setIsSignatureModalOpen(false);
+    
+    // We need to wait for state to propagate before capturing
     if (certificateTarget) {
         generatePdf(certificateTarget, signatureDataUrl);
+    } else {
+        // Fallback for worker self-print where target might be implicit
+        generatePdf(currentUser, signatureDataUrl);
     }
   };
 
   const generatePdf = async (targetUser: User, signature: string) => {
+    setIsGeneratingPdf(true);
+    // Give React time to render the signature into the Certificate component
     setTimeout(async () => {
       const element = document.getElementById('certificate-print-area');
-      if (!element) return;
+      if (!element) {
+          console.error("Certificate element not found");
+          setIsGeneratingPdf(false);
+          return;
+      }
+      
       try {
-        setIsGeneratingPdf(true);
-        const parent = element.parentElement;
-        if (parent) {
-            parent.style.opacity = '1';
-            parent.style.zIndex = '9999';
-            parent.style.background = '#fff';
-        }
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
-        if (parent) {
-            parent.style.opacity = '0';
-            parent.style.zIndex = '-1';
-        }
+        const canvas = await html2canvas(element, { 
+            scale: 2, 
+            useCORS: true, 
+            logging: false, 
+            backgroundColor: '#ffffff',
+            windowWidth: 1200 // Force desktop width context for rendering
+        });
+        
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
+        
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Zaswiadczenie_BHP_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
+        pdf.save(`Karta_Szkolenia_BHP_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
       } catch (error) {
         console.error('PDF Generation Error:', error);
-        alert('Wystąpił błąd podczas generowania pliku PDF. Sprawdź konsolę lub spróbuj ponownie.');
+        alert('Wystąpił błąd podczas generowania pliku PDF.');
       } finally {
         setIsGeneratingPdf(false);
         setCertificateTarget(null);
         setCertificateSignature(null);
       }
-    }, 200);
+    }, 500); // Increased timeout to ensure image loading
   };
 
   if (!currentUser) {
@@ -314,6 +326,7 @@ const App: React.FC = () => {
             onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
             onConfirm={handleSignatureConfirm}
         />
+        {/* Always render Certificate off-screen for capture */}
         {certificateTarget && (
           <Certificate 
             user={certificateTarget}

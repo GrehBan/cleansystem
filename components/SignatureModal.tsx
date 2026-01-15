@@ -8,29 +8,39 @@ interface SignatureModalProps {
   title?: string;
 }
 
-const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConfirm, title = "Podpisz Certyfikat" }) => {
+const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConfirm, title = "Podpisz Dokument" }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
 
+  // Initialize Canvas with proper DPI scaling
   useEffect(() => {
     if (isOpen && canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
+      
+      // Get the display size of the canvas
+      const rect = canvas.getBoundingClientRect();
+      
+      // Handle High DPI (Retina) displays
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Set actual size in memory (scaled to account for extra pixel density)
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      
       if (ctx) {
-        // Set canvas resolution for high DPI screens
-        const ratio = Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
-        ctx.scale(ratio, ratio);
-        
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = '#000000';
+          // Normalize coordinate system to use css pixels
+          ctx.scale(dpr, dpr);
+          ctx.lineWidth = 2;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = '#000000';
       }
     }
   }, [isOpen]);
 
+  // Helper to get correct coordinates relative to canvas
   const getCoordinates = (event: React.MouseEvent | React.TouchEvent) => {
     if (!canvasRef.current) return { x: 0, y: 0 };
     const canvas = canvasRef.current;
@@ -53,7 +63,11 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConf
   };
 
   const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault(); // Prevent scrolling on touch
+    // Prevent scrolling on touch devices
+    if (e.type === 'touchstart') {
+        document.body.style.overflow = 'hidden';
+    }
+    
     setIsDrawing(true);
     const { x, y } = getCoordinates(e);
     const ctx = canvasRef.current?.getContext('2d');
@@ -64,8 +78,11 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConf
   };
 
   const draw = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
     if (!isDrawing) return;
+    
+    // Crucial for touch: prevent page scrolling while drawing
+    if(e.cancelable) e.preventDefault();
+    
     const { x, y } = getCoordinates(e);
     const ctx = canvasRef.current?.getContext('2d');
     if (ctx) {
@@ -75,21 +92,30 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConf
     }
   };
 
-  const stopDrawing = () => {
+  const stopDrawing = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDrawing(false);
+    // Re-enable scrolling
+    if (e.type === 'touchend' || e.type === 'touchcancel') {
+        document.body.style.overflow = '';
+    }
   };
 
   const clearSignature = () => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (canvas && ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Note: width/height are scaled
+      // Clear entire canvas (use width/height which are scaled)
+      ctx.clearRect(0, 0, canvas.width, canvas.height); 
+      
+      // Need to beginPath again to avoid connecting old lines if we draw again
+      ctx.beginPath();
       setHasSignature(false);
     }
   };
 
   const handleConfirm = () => {
     if (canvasRef.current && hasSignature) {
+      // Export signature
       const dataUrl = canvasRef.current.toDataURL('image/png');
       onConfirm(dataUrl);
     }
@@ -98,25 +124,27 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConf
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-card border border-border w-full max-w-lg rounded-xl shadow-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="bg-white text-black w-full max-w-lg rounded-xl shadow-2xl flex flex-col overflow-hidden">
+        
         {/* Header */}
-        <div className="p-4 border-b border-border flex justify-between items-center bg-surface">
-          <h3 className="text-lg font-bold text-white">{title}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+          <div>
+              <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wide">Wymagany podpis biometryczny</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-black transition-colors">
             <X size={24} />
           </button>
         </div>
 
         {/* Canvas Area */}
         <div className="p-6 bg-white flex flex-col items-center">
-            <p className="text-gray-500 text-xs mb-2 uppercase tracking-wide font-bold w-full text-left">
-                Złóż podpis w polu poniżej:
-            </p>
-            <div className="relative w-full aspect-[2/1] border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 touch-none">
+            <div className="relative w-full h-48 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 touch-none select-none">
                 <canvas
                     ref={canvasRef}
-                    className="w-full h-full cursor-crosshair touch-none"
+                    className="w-full h-full cursor-crosshair touch-none block"
+                    style={{ touchAction: 'none' }} // Modern CSS property to disable browser handling of gestures
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
@@ -124,36 +152,38 @@ const SignatureModal: React.FC<SignatureModalProps> = ({ isOpen, onClose, onConf
                     onTouchStart={startDrawing}
                     onTouchMove={draw}
                     onTouchEnd={stopDrawing}
+                    onTouchCancel={stopDrawing}
                 />
                 {!hasSignature && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                        <span className="text-4xl font-serif text-gray-400 italic">Podpis</span>
+                        <span className="text-4xl font-serif text-gray-400 italic">Podpis tutaj</span>
                     </div>
                 )}
             </div>
-            <p className="text-[10px] text-gray-400 mt-2 text-center">
-                Myszka lub palec (urządzenia dotykowe).
+            <p className="text-[11px] text-gray-400 mt-3 text-center">
+                Składając podpis potwierdzasz prawdziwość danych pod rygorem odpowiedzialności karnej (Art. 233 KK).<br/>
+                Użyj palca (dotyk) lub myszki.
             </p>
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-surface border-t border-border flex justify-between gap-4">
+        <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-between gap-4">
             <button 
                 onClick={clearSignature}
-                className="flex items-center gap-2 px-4 py-2 rounded text-sm font-bold text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                className="flex items-center gap-2 px-4 py-3 rounded text-sm font-bold text-gray-600 hover:bg-gray-200 transition-colors"
             >
                 <Eraser size={16} /> Wyczyść
             </button>
             <button 
                 onClick={handleConfirm}
                 disabled={!hasSignature}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded text-sm font-bold text-white transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded text-sm font-bold text-white transition-all shadow-lg ${
                     hasSignature 
-                    ? 'bg-primary hover:bg-orange-600 shadow-lg shadow-primary/20' 
-                    : 'bg-gray-700 cursor-not-allowed opacity-50'
+                    ? 'bg-blue-600 hover:bg-blue-700' 
+                    : 'bg-gray-400 cursor-not-allowed opacity-70'
                 }`}
             >
-                <Check size={16} /> Zatwierdź i Pobierz
+                <Check size={16} /> ZATWIERDZAM PODPIS
             </button>
         </div>
       </div>

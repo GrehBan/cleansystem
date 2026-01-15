@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, TrainingLog, CompanyConfig } from '../types';
 import { MODULES } from '../data';
-import { Users, UserPlus, FileText, Trash2, LogOut, KeyRound, ShieldCheck, History, FileOutput, Printer, PenTool, Building2, Save } from 'lucide-react';
+import { Users, UserPlus, FileText, Trash2, LogOut, KeyRound, ShieldCheck, History, FileOutput, Printer, PenTool, Building2, Save, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
 interface AdminPanelProps {
@@ -25,7 +25,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
     idNumber: '',
     address: '',
     phoneNumber: '',
-    email: ''
+    email: '',
+    jobTitle: 'Pracownik Serwisu Porządkowego' // Default
   });
 
   // Company Form State
@@ -38,7 +39,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
       .replace(/ł/g, "l").replace(/Ł/g, "L");
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -52,10 +53,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
     e.preventDefault();
     if (formData.name.trim() && formData.pesel.trim()) {
       onRegisterUser(formData);
-      setFormData({ name: '', pesel: '', idNumber: '', address: '', phoneNumber: '', email: '' });
-      alert('Pracownik został dodany do bazy.');
+      setFormData({ name: '', pesel: '', idNumber: '', address: '', phoneNumber: '', email: '', jobTitle: 'Pracownik Serwisu Porządkowego' });
+      alert('Pracownik został dodany do bazy kadr.');
     } else {
-        alert('Imię i PESEL są wymagane.');
+        alert('Imię i PESEL są wymagane ustawowo.');
     }
   };
 
@@ -63,6 +64,32 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
     e.preventDefault();
     onUpdateCompany(companyForm);
     alert('Dane firmy zostały zaktualizowane. Będą widoczne na nowych certyfikatach.');
+  };
+
+  // EXPORT TO CSV (EXCEL)
+  const exportToCSV = () => {
+    const headers = ["ID", "Imie i Nazwisko", "PESEL", "Stanowisko", "Data Rejestracji", "Postep %", "Certyfikat ID"];
+    const rows = users.filter(u => u.role === 'worker').map(user => [
+        user.id,
+        user.name,
+        user.pesel || "",
+        user.jobTitle || "",
+        user.joinedDate,
+        getProgressPercentage(user),
+        user.certificateId || "BRAK"
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8," 
+        + headers.join(",") + "\n" 
+        + rows.map(e => e.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `KADRY_EXPORT_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const generateLegalAuditReport = () => {
@@ -147,7 +174,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
             doc.setFont("helvetica", "normal");
             doc.setFontSize(6);
             doc.text(`PESEL: ${log.userPesel}`, 60, yPos + 9);
-            doc.text(`ADRES: ${normalizeText(log.userSnapshot.address || 'BRAK')}`, 60, yPos + 13);
+            doc.text(`STANOWISKO: ${normalizeText(log.userSnapshot.jobTitle || 'BRAK')}`, 60, yPos + 13);
             doc.text(`DOWOD: ${normalizeText(log.userSnapshot.idNumber || 'BRAK')}`, 60, yPos + 17);
 
             // Col 3: Module Info
@@ -313,6 +340,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                     </div>
 
                     <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase block mb-1">Stanowisko Pracy (Wymagane)</label>
+                         <input name="jobTitle" value={formData.jobTitle} onChange={handleInputChange} type="text" className="w-full bg-surface border border-border rounded p-3 text-white focus:border-primary focus:outline-none" placeholder="np. Sprzątaczka" required />
+                    </div>
+
+                    <div>
                         <label className="text-xs font-bold text-gray-500 uppercase block mb-1">Adres Zamieszkania</label>
                         <input name="address" value={formData.address} onChange={handleInputChange} type="text" className="w-full bg-surface border border-border rounded p-3 text-white focus:border-primary focus:outline-none" placeholder="Ulica, Miasto, Kod" />
                     </div>
@@ -329,7 +361,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                     </div>
 
                     <button type="submit" className="w-full bg-white text-black font-bold py-3 rounded hover:bg-gray-200 transition-colors mt-4">
-                        Zarejestruj w Systemie
+                        Zarejestruj w Kadrach
                     </button>
                     <p className="text-[10px] text-gray-500 mt-2 text-center">* Pola wymagane do celów dowodowych.</p>
                 </form>
@@ -337,9 +369,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
 
             {/* Workers List Column */}
             <div className="lg:col-span-2 bg-card border border-border rounded-xl p-6">
-                <div className="flex items-center gap-2 mb-6 text-secondary">
-                    <Users size={24} />
-                    <h2 className="text-xl font-bold text-white">Baza Pracowników ({workers.length})</h2>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 text-secondary">
+                    <div className="flex items-center gap-2">
+                        <Users size={24} />
+                        <h2 className="text-xl font-bold text-white">Baza Pracowników ({workers.length})</h2>
+                    </div>
+                    <button onClick={exportToCSV} className="flex items-center gap-2 text-xs bg-green-900/30 text-green-400 border border-green-800 px-3 py-2 rounded hover:bg-green-900/50 transition-colors">
+                        <Download size={14} /> Eksport CSV (HR)
+                    </button>
                 </div>
 
                 <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -359,10 +396,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                                     <div>
                                         <div className="font-bold text-white">{worker.name}</div>
                                         <div className="text-xs text-gray-400 font-mono">PESEL: {worker.pesel || 'Brak'}</div>
-                                        <div className="flex items-center gap-2 text-xs font-mono text-gray-500 mt-1">
-                                            <KeyRound size={12} className="text-primary" />
-                                            <span>PIN: <span className="text-white font-bold">{worker.password || '----'}</span></span>
-                                        </div>
+                                        <div className="text-xs text-gray-500 font-bold uppercase mt-1">{worker.jobTitle || 'Stanowisko nieokreślone'}</div>
                                     </div>
                                 </div>
 
@@ -374,6 +408,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                                     <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
                                         <div className="h-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }}></div>
                                     </div>
+                                    <div className="flex items-center gap-2 text-xs font-mono text-gray-500 mt-2">
+                                        <KeyRound size={12} className="text-primary" />
+                                        <span>PIN: <span className="text-white font-bold">{worker.password || '----'}</span></span>
+                                    </div>
                                 </div>
 
                                 <div className="flex gap-2 w-full md:w-auto">
@@ -384,7 +422,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                                         className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-success/10 text-success border border-success/30 hover:bg-success hover:text-white px-3 py-2 rounded text-xs font-bold transition-all"
                                         title="Generuj Certyfikat"
                                         >
-                                            <FileText size={16} /> Certyfikat
+                                            <FileText size={16} /> Karta Szkolenia
                                         </button>
                                     )}
                                     <button 
@@ -434,7 +472,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                             <tr className="bg-surface border-b border-gray-700 text-xs text-gray-400 uppercase">
                                 <th className="p-4">Data i Czas</th>
                                 <th className="p-4">Pracownik</th>
-                                <th className="p-4">PESEL (ID)</th>
+                                <th className="p-4">Stanowisko</th>
                                 <th className="p-4">Moduł</th>
                                 <th className="p-4">Wynik</th>
                                 <th className="p-4">Podpis Biometryczny</th>
@@ -450,8 +488,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                                 logs.map(log => (
                                     <tr key={log.id} className="border-b border-gray-800 hover:bg-white/5 transition-colors">
                                         <td className="p-4 font-mono text-gray-400 whitespace-nowrap">{new Date(log.timestamp).toLocaleString('pl-PL')}</td>
-                                        <td className="p-4 font-bold text-white">{log.userName}</td>
-                                        <td className="p-4 font-mono">{log.userPesel}</td>
+                                        <td className="p-4 font-bold text-white">
+                                            {log.userName}
+                                            <div className="text-[10px] font-mono font-normal text-gray-500">{log.userPesel}</div>
+                                        </td>
+                                        <td className="p-4 text-xs text-gray-300">{log.userSnapshot.jobTitle || '---'}</td>
                                         <td className="p-4 text-primary">{log.moduleTitle}</td>
                                         <td className="p-4 font-bold text-success">{log.score}%</td>
                                         <td className="p-4">
@@ -470,7 +511,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users, logs, companyConfig, onR
                                         <td className="p-4 text-[10px] text-gray-500 font-mono">
                                             <div>UA: {log.legalMeta?.userAgent.substring(0, 20)}...</div>
                                             <div>IP: {log.legalMeta?.ipPlaceholder}</div>
-                                            <div title="Podmiot prawny w momencie szkolenia">PR: {log.legalMeta?.employerNameSnapshot.substring(0, 15)}...</div>
                                         </td>
                                     </tr>
                                 ))
