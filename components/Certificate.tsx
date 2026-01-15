@@ -6,10 +6,10 @@ interface CertificateProps {
   user: User;
   completionDate: string;
   company: CompanyConfig;
-  signatureImage?: string | null;
+  signatureImage?: string | null; // Kept in interface but ignored for print layout
 }
 
-const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company, signatureImage }) => {
+const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company }) => {
   // Styles for the A4 container to ensure it renders correctly off-screen for html2canvas
   const printAreaStyle: React.CSSProperties = {
     position: 'fixed',
@@ -20,10 +20,10 @@ const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company
     backgroundColor: 'white',
     zIndex: -1,
     color: 'black',
-    fontFamily: 'serif',
+    fontFamily: 'Times New Roman, serif', // More formal font for print
     padding: '48px', // ~12mm padding
     boxSizing: 'border-box',
-    display: 'block' // Ensure it's not hidden
+    display: 'block'
   };
 
   return (
@@ -77,22 +77,18 @@ const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company
             </p>
             <div className="flex justify-between items-end mt-12 px-4">
                  <div className="text-center w-5/12">
-                    <div className="h-12 flex items-end justify-center">
-                        {signatureImage ? (
-                            <img src={signatureImage} className="max-h-12 max-w-full" alt="Podpis" />
-                        ) : (
-                            <span className="text-gray-300 text-xs italic">Brak podpisu</span>
-                        )}
+                    <div className="h-12 flex items-end justify-center text-black tracking-widest">
+                        ..................................................
                     </div>
-                    <div className="border-t border-black pt-1 mt-1 text-xs text-black font-bold">
+                    <div className="text-xs text-black font-bold uppercase">
                         (podpis pracownika)
                     </div>
                  </div>
                  <div className="text-center w-5/12">
-                    <div className="h-12 flex items-end justify-center">
-                        <span className="font-script text-lg text-black">{company.representative}</span>
+                    <div className="h-12 flex items-end justify-center text-black tracking-widest">
+                         ..................................................
                     </div>
-                    <div className="border-t border-black pt-1 mt-1 text-xs text-black font-bold">
+                    <div className="text-xs text-black font-bold uppercase">
                         (podpis instruktora / inspektora BHP)
                     </div>
                  </div>
@@ -131,27 +127,22 @@ const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company
                  </p>
 
                  <div className="flex justify-between items-end gap-8 px-4">
-                     {/* Signature Image */}
+                     {/* Signature Employee */}
                      <div className="text-center w-5/12 relative">
-                        <div className="h-16 flex items-end justify-center mb-1">
-                             {signatureImage ? (
-                                <img src={signatureImage} alt="Podpis" className="max-h-full max-w-full object-contain" />
-                             ) : (
-                                <span className="text-gray-300 italic text-xs">Brak podpisu elektronicznego</span>
-                             )}
+                        <div className="h-12 flex items-end justify-center mb-1 text-black tracking-widest">
+                             ..................................................
                         </div>
-                        <div className="text-xs border-t border-black pt-1 text-black font-bold">
+                        <div className="text-xs text-black font-bold uppercase">
                             (Data i podpis pracownika)
                         </div>
-                        <p className="absolute -bottom-4 left-0 right-0 text-[10px] text-gray-500">{completionDate}</p>
                      </div>
 
                      {/* Instructor */}
                      <div className="text-center w-5/12">
-                        <div className="h-16 flex items-end justify-center mb-1">
-                             <span className="font-script text-xl text-black">{company.representative}</span>
+                        <div className="h-12 flex items-end justify-center mb-1 text-black tracking-widest">
+                             ..................................................
                         </div>
-                        <div className="text-xs border-t border-black pt-1 text-black font-bold">
+                        <div className="text-xs text-black font-bold uppercase">
                             (Podpis Kierownika / Instruktora)
                         </div>
                      </div>
@@ -173,7 +164,7 @@ const Certificate: React.FC<CertificateProps> = ({ user, completionDate, company
 
         {/* Footer info */}
         <div className="text-[8px] text-gray-500 text-center mt-2">
-             ID DOKUMENTU: {user.certificateId || 'PENDING'} | PRACODAWCA: {company.companyName}, NIP: {company.nip} | GENEROWANO CYFROWO (VIVO CLEAN SYSTEM 2026)
+             Wersja do druku (Akta Osobowe Część B). System VIVO CLEAN 2026.
         </div>
     </div>
   );

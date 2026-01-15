@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import Quiz from './components/Quiz';
 import Certificate from './components/Certificate';
+import RiskAssessment from './components/RiskAssessment';
 import LoginScreen from './components/LoginScreen';
 import AdminPanel from './components/AdminPanel';
 import Resources from './components/Resources';
@@ -234,7 +235,7 @@ const App: React.FC = () => {
             score: score,
             timestamp: new Date().toISOString(),
             legalStatementAccepted: true,
-            signatureData: signatureData || null, // STORE THE SIGNATURE
+            signatureData: signatureData || null, // STORE THE SIGNATURE INTERNALLY
             userSnapshot: {
                 address: currentUser.address || '',
                 idNumber: currentUser.idNumber || '',
@@ -256,28 +257,61 @@ const App: React.FC = () => {
     }
   };
 
-  // --- PDF GENERATION ---
+  // --- PDF GENERATION (CERTIFICATE) ---
   const handleInitiateCertificate = (targetUser: User) => {
     setCertificateTarget(targetUser);
+    // For "Hybrid" flow, we might still want the signature modal for the *Audit Log*, 
+    // but the PRINTED certificate will have blank lines.
+    // The previous flow required signature first. We keep it to ensure "digital intent".
     setIsSignatureModalOpen(true);
+  };
+  
+  const handleGenerateRiskPdf = async (targetUser: User) => {
+    setCertificateTarget(targetUser);
+    // Wait for render
+    setIsGeneratingPdf(true);
+    setTimeout(async () => {
+        const element = document.getElementById('risk-print-area');
+        if (!element) {
+            console.error("Risk element not found");
+            setIsGeneratingPdf(false);
+            return;
+        }
+        try {
+             const canvas = await html2canvas(element, { 
+                scale: 2, 
+                useCORS: true, 
+                logging: false, 
+                backgroundColor: '#ffffff',
+                windowWidth: 1200 
+            });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            pdf.addImage(imgData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            pdf.save(`Ocena_Ryzyka_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
+        } catch (e) {
+            console.error(e);
+            alert('Błąd generowania Oceny Ryzyka');
+        } finally {
+            setIsGeneratingPdf(false);
+            setCertificateTarget(null);
+        }
+    }, 500);
   };
 
   const handleSignatureConfirm = (signatureDataUrl: string) => {
-    setCertificateSignature(signatureDataUrl);
+    setCertificateSignature(signatureDataUrl); // We store it, but Certificate.tsx ignores it for print
     setIsSignatureModalOpen(false);
     
-    // We need to wait for state to propagate before capturing
     if (certificateTarget) {
-        generatePdf(certificateTarget, signatureDataUrl);
+        generateCertificatePdf(certificateTarget);
     } else {
-        // Fallback for worker self-print where target might be implicit
-        generatePdf(currentUser, signatureDataUrl);
+        generateCertificatePdf(currentUser);
     }
   };
 
-  const generatePdf = async (targetUser: User, signature: string) => {
+  const generateCertificatePdf = async (targetUser: User) => {
     setIsGeneratingPdf(true);
-    // Give React time to render the signature into the Certificate component
     setTimeout(async () => {
       const element = document.getElementById('certificate-print-area');
       if (!element) {
@@ -292,15 +326,12 @@ const App: React.FC = () => {
             useCORS: true, 
             logging: false, 
             backgroundColor: '#ffffff',
-            windowWidth: 1200 // Force desktop width context for rendering
+            windowWidth: 1200 
         });
         
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
         pdf.save(`Karta_Szkolenia_BHP_${targetUser.name.replace(/\s+/g, '_')}.pdf`);
       } catch (error) {
         console.error('PDF Generation Error:', error);
@@ -310,7 +341,7 @@ const App: React.FC = () => {
         setCertificateTarget(null);
         setCertificateSignature(null);
       }
-    }, 500); // Increased timeout to ensure image loading
+    }, 500);
   };
 
   if (!currentUser) {
@@ -326,19 +357,27 @@ const App: React.FC = () => {
             onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
             onConfirm={handleSignatureConfirm}
         />
-        {/* Always render Certificate off-screen for capture */}
+        {/* Render Hidden Docs for Capture */}
         {certificateTarget && (
-          <Certificate 
-            user={certificateTarget}
-            completionDate={new Date().toLocaleDateString('pl-PL')}
-            company={companyConfig}
-            signatureImage={certificateSignature}
-          />
+            <>
+                <Certificate 
+                    user={certificateTarget}
+                    completionDate={new Date().toLocaleDateString('pl-PL')}
+                    company={companyConfig}
+                    signatureImage={certificateSignature}
+                />
+                <RiskAssessment 
+                    user={certificateTarget}
+                    company={companyConfig}
+                    date={new Date().toLocaleDateString('pl-PL')}
+                />
+            </>
         )}
+        
         {isGeneratingPdf && (
           <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
               <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-              <h2 className="text-xl font-bold">Generowanie Dokumentu Prawnego...</h2>
+              <h2 className="text-xl font-bold">Generowanie Dokumentacji...</h2>
           </div>
         )}
 
@@ -358,27 +397,32 @@ const App: React.FC = () => {
 
   // --- WORKER VIEW ---
   const activeModule = MODULES.find(m => m.id === activeModuleId);
+  const targetForPdf = certificateTarget || currentUser;
 
   return (
     <div className="flex min-h-screen bg-background text-white font-sans selection:bg-primary selection:text-white">
-      {/* 
-        Certificate Component for Screenshot Generation 
-      */}
       <SignatureModal 
             isOpen={isSignatureModalOpen} 
             onClose={() => { setIsSignatureModalOpen(false); setCertificateTarget(null); }}
             onConfirm={handleSignatureConfirm}
       />
+      {/* Hidden Render Areas */}
       <Certificate 
-        user={certificateTarget || currentUser}
+        user={targetForPdf}
         completionDate={new Date().toLocaleDateString('pl-PL')}
         company={companyConfig}
         signatureImage={certificateSignature}
       />
+      <RiskAssessment 
+        user={targetForPdf}
+        company={companyConfig}
+        date={new Date().toLocaleDateString('pl-PL')}
+      />
+
       {isGeneratingPdf && (
         <div className="fixed inset-0 bg-black/80 z-[10000] flex flex-col items-center justify-center text-white">
             <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-            <h2 className="text-xl font-bold">Generowanie Zaświadczenia...</h2>
+            <h2 className="text-xl font-bold">Przetwarzanie Dokumentu...</h2>
         </div>
       )}
 
@@ -410,6 +454,7 @@ const App: React.FC = () => {
             progress={currentUser.progress} 
             onSelectModule={handleSelectModule} 
             onPrintCertificate={() => handleInitiateCertificate(currentUser)}
+            onPrintRiskAssessment={() => handleGenerateRiskPdf(currentUser)}
             onShowResources={handleShowResources}
           />
         ) : currentView === 'resources' ? (

@@ -1,16 +1,17 @@
 import React from 'react';
 import { MODULES } from '../data';
 import { UserProgress, ModuleProgress } from '../types';
-import { PlayCircle, CheckCircle, FileText } from 'lucide-react';
+import { PlayCircle, CheckCircle, FileText, ShieldAlert } from 'lucide-react';
 
 interface DashboardProps {
   progress: UserProgress;
   onSelectModule: (id: string) => void;
   onPrintCertificate: () => void;
+  onPrintRiskAssessment: () => void;
   onShowResources?: () => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectModule, onPrintCertificate, onShowResources }) => {
+const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectModule, onPrintCertificate, onPrintRiskAssessment, onShowResources }) => {
   const completedCount = (Object.values(progress) as ModuleProgress[]).filter((p) => p.passed).length;
   const totalCount = MODULES.length;
   const isAllCompleted = completedCount === totalCount;
@@ -79,9 +80,9 @@ const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectModule, onPrint
       </div>
 
       {/* Action Buttons Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Resources Card */}
-          <div className="p-8 rounded-xl border bg-surface border-border flex items-center justify-between gap-6 hover:border-primary/50 transition-colors group cursor-pointer" onClick={onShowResources}>
+          <div className="p-8 rounded-xl border bg-surface border-border flex flex-col justify-between gap-4 hover:border-primary/50 transition-colors group cursor-pointer" onClick={onShowResources}>
               <div>
                   <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
                       <FileText size={20} className="text-primary" />
@@ -91,38 +92,59 @@ const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectModule, onPrint
                       Karty charakterystyki, instrukcje maszyn, wykaz chemii Tenzi i sprzętu.
                   </p>
               </div>
-              <div className="bg-primary/10 p-3 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all">
+              <div className="bg-primary/10 p-3 rounded-full text-primary w-fit group-hover:bg-primary group-hover:text-white transition-all self-end">
                   <PlayCircle size={24} />
               </div>
           </div>
 
           {/* Certificate Card */}
-          <div className={`p-8 rounded-xl border ${isAllCompleted ? 'bg-success/10 border-success' : 'bg-surface border-border'}`}>
-             <div className="flex flex-col md:flex-row items-center justify-between gap-6 h-full">
-                <div>
-                   <h3 className={`text-xl font-bold mb-2 ${isAllCompleted ? 'text-success' : 'text-white'}`}>
-                      {isAllCompleted ? 'Certyfikacja Dostępna' : 'Status Certyfikacji'}
-                   </h3>
-                   <p className="text-gray-400 text-sm">
-                      {isAllCompleted 
-                        ? 'Wszystkie moduły zaliczone. Pobierz certyfikat.'
-                        : `Ukończono ${completedCount} z ${totalCount} modułów.`
-                      }
-                   </p>
-                </div>
-                
-                <button 
-                   disabled={!isAllCompleted}
-                   onClick={onPrintCertificate}
-                   className={`px-6 py-3 rounded font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      isAllCompleted 
-                      ? 'bg-success text-white hover:bg-green-600 shadow-lg shadow-green-500/20' 
-                      : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                   }`}
-                >
-                   POBIERZ
-                </button>
+          <div className={`p-8 rounded-xl border flex flex-col justify-between gap-4 ${isAllCompleted ? 'bg-success/10 border-success' : 'bg-surface border-border'}`}>
+             <div>
+                 <h3 className={`text-xl font-bold mb-2 ${isAllCompleted ? 'text-success' : 'text-white'}`}>
+                    1. Karta Szkolenia (BHP)
+                 </h3>
+                 <p className="text-gray-400 text-sm">
+                    Szkolenie Wstępne i Stanowiskowe.
+                    {isAllCompleted ? ' Gotowe do pobrania.' : ' Ukończ moduły.'}
+                 </p>
              </div>
+             
+             <button 
+                disabled={!isAllCompleted}
+                onClick={onPrintCertificate}
+                className={`w-full px-6 py-3 rounded font-bold transition-all flex items-center justify-center gap-2 ${
+                   isAllCompleted 
+                   ? 'bg-success text-white hover:bg-green-600 shadow-lg shadow-green-500/20' 
+                   : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                }`}
+             >
+                POBIERZ KARTĘ
+             </button>
+          </div>
+
+          {/* Risk Assessment Card */}
+          <div className={`p-8 rounded-xl border flex flex-col justify-between gap-4 ${isAllCompleted ? 'bg-blue-900/10 border-blue-500' : 'bg-surface border-border'}`}>
+             <div>
+                 <h3 className={`text-xl font-bold mb-2 ${isAllCompleted ? 'text-blue-400' : 'text-white'}`}>
+                    2. Ocena Ryzyka
+                 </h3>
+                 <p className="text-gray-400 text-sm">
+                    Oświadczenie o zapoznaniu się z ryzykiem zawodowym (Art. 226 KP).
+                 </p>
+             </div>
+             
+             <button 
+                disabled={!isAllCompleted}
+                onClick={onPrintRiskAssessment}
+                className={`w-full px-6 py-3 rounded font-bold transition-all flex items-center justify-center gap-2 ${
+                   isAllCompleted 
+                   ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20' 
+                   : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                }`}
+             >
+                <ShieldAlert size={18} />
+                POBIERZ OŚWIADCZENIE
+             </button>
           </div>
       </div>
     </div>
