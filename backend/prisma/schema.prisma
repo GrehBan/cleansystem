@@ -1,0 +1,105 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  WORKER
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  role          Role      @default(WORKER)
+  passwordHash  String
+  joinedDate    DateTime  @default(now())
+  certificateId String?   @unique
+
+  // Personal Data (GDPR)
+  pesel       String?
+  idNumber    String?
+  address     String?
+  phoneNumber String?
+  email       String?
+  jobTitle    String?
+
+  // Legal Consents
+  rodoAccepted     Boolean   @default(false)
+  rodoAcceptedDate DateTime?
+
+  // Relations
+  progress     UserProgress[]
+  trainingLogs TrainingLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([role])
+}
+
+model UserProgress {
+  id               String  @id @default(uuid())
+  userId           String
+  moduleId         String
+  completedLessons Int[]   @default([])
+  quizScore        Int?
+  passed           Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, moduleId])
+  @@index([userId])
+  @@index([moduleId])
+}
+
+model TrainingLog {
+  id                     String   @id @default(uuid())
+  userId                 String
+  userName               String
+  userPesel              String?
+  moduleId               String
+  moduleTitle            String
+  score                  Int
+  timestamp              DateTime @default(now())
+  legalStatementAccepted Boolean
+  signatureData          String?  @db.Text
+
+  // User snapshot at time of training
+  userSnapshotAddress  String?
+  userSnapshotIdNumber String?
+  userSnapshotJobTitle String?
+
+  // Legal metadata
+  legalMetaUserAgent    String?
+  legalMetaIp           String?
+  legalMetaEmployerName String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([moduleId])
+  @@index([timestamp])
+}
+
+model CompanyConfig {
+  id             String @id @default("default")
+  companyName    String
+  nip            String
+  address        String
+  representative String
+  city           String
+
+  updatedAt DateTime @updatedAt
+}
